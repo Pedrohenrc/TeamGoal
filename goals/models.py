@@ -5,9 +5,9 @@ from users.models import CustomUser
 
 class Goal(models.Model):
     STATUS_CHOICES = [
-        ("pendente"),
-        ("em progresso"),
-        ("concluida")
+        ('pending', 'Pendente'),
+        ('in_progress', 'Em Progresso'),
+        ('completed', 'Concluída'),
     ]
 
     team = models.ForeignKey(Team, on_delete=models.CASCADE, related_name="goals")
