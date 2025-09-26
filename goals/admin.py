@@ -4,6 +4,6 @@ from .models import Goal
 
 @admin.register(Goal)
 class GoalAdmin(admin.ModelAdmin):
-    list_display = ('team', 'deadline', 'created_at') 
+    list_display = ('team', 'status', 'deadline', 'created_at') 
     search_fields = ('status', 'description')        
     list_filter = ('team', 'title')
