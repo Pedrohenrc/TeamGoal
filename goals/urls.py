@@ -1,4 +1,4 @@
-from django.urls import path
+from django.urls import path, include
 from .views import GoalCreateView, GoalDetailView, GoalListView, GoalUpdateView
 
 urlpatterns = [
@@ -6,5 +6,5 @@ urlpatterns = [
     path("create/", GoalCreateView.as_view(), name="goal-create"),
     path("<int:pk>", GoalDetailView.as_view(), name='goal-detail'),
     path("<int:pk>/editar/", GoalUpdateView.as_view(), name='goal-update'),
-    path("<int:goal_id>/contributions/", include("contributions.urls"))
+    path("<int:pk>/contributions/", include("contributions.urls"))
 ]
