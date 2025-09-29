@@ -4,6 +4,7 @@ from django.urls import reverse_lazy
 from django.contrib.auth.mixins import LoginRequiredMixin
 from .forms import ContributionForm
 from goals.models import Goal
+from subgoals.models import SubGoal
 # Create your views here.
 
 class ContributionCreateView(CreateView):
@@ -13,11 +14,11 @@ class ContributionCreateView(CreateView):
 
     def form_valid(self, form):
         form.instance.user = self.request.user
-        subtask_id = self.kwargs.get("pk")
-        goal_id = self.kwargs.get("pk")
+        subtask_id = self.kwargs.get("subgoal_id")
+        goal_id = self.kwargs.get("goal_id")
 
         if subtask_id:
-            form.instance.subtask = Subtask.objects.get(pk=subtask_id)
+            form.instance.subtask = SubGoal.objects.get(pk=subtask_id)
             form.instance.goal = form.instance.subtask.goal
         elif goal_id:
             form.instance.goal = Goal.objects.get(pk=goal_id)
@@ -32,7 +33,7 @@ class ContributionCreateView(CreateView):
         return reverse_lazy("goal-detail", kwargs={"pk": self.kwargs.get("pk")})
 
 class ContributionListView(ListView, LoginRequiredMixin):
-    Model = Contribution
+    model = Contribution
     context_object_name = 'contributions'
 
     def get_queryset(self):
