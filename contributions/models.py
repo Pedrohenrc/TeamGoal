@@ -3,7 +3,7 @@ from users.models import CustomUser
 # Create your models here.
 
 class Contribution(models.Model):
-    subtask = models.ForeignKey("goals.Subtask", on_delete=models.CASCADE, null=True, blank=True, related_name="contributions")
+    subtask = models.ForeignKey("subgoals.SubGoal", on_delete=models.CASCADE, null=True, blank=True, related_name="contributions")
     goal = models.ForeignKey("goals.Goal", on_delete=models.CASCADE, null=True, blank=True, related_name="contributions")
     created_at = models.DateTimeField(auto_now_add=True)
     user = models.ForeignKey(CustomUser, on_delete=models.CASCADE, related_name="contributions")

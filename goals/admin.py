@@ -1,8 +1,12 @@
 from django.contrib import admin
 from .models import Goal
 from subgoals.models import SubGoal
+from users.models import CustomUser
+from django.contrib.auth.admin import UserAdmin
 # Register your models here.
-
+@admin.register(CustomUser)
+class CustomUserAdmin(UserAdmin):
+    pass
 class SubGoalInline(admin.TabularInline): 
     model = SubGoal
     extra = 1  
