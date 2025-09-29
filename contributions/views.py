@@ -43,7 +43,7 @@ class ContributionListView(ListView, LoginRequiredMixin):
         if status_param == "me":
             queryset = queryset.filter(user=self.request.user)
         
-        goal_id = self.kwargs.get("pk")
+        goal_id = self.kwargs.get("goal_id")
         if goal_id:
             queryset = queryset.filter(pk=goal_id)
         
