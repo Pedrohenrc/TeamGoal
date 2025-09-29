@@ -11,11 +11,12 @@ class Goal(models.Model):
     ]
 
     team = models.ForeignKey(Team, on_delete=models.CASCADE, related_name="goals")
-    title = models.CharField(max_length=150)
+    title = models.CharField(max_length=150, unique=True)
     description = models.TextField()
     deadline = models.DateField()
     status = models.CharField(max_length=20, choices=STATUS_CHOICES, default="pending")
     created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
 
     def __str__(self):
         return f"{self.title} ({self.team.name})"
@@ -30,22 +31,15 @@ class Goal(models.Model):
     
     
     def update_progress(self):
-        total = self.subtasks.count()
-        if total == 0:
-            self.progress = 0
-        else:
-            completed = self.subtasks.filter(is_completed=True).count()
-            self.progress = int((completed / total) * 100)
-        self.save()
-
-    def fechar_meta(goal):
-        if goal.subtasks.filter(is_completed=False).exists():
-            # avisar usuário: ainda há subtasks abertas
+        if self.subtasks.exists() and self.subtasks.filter(is_completed=False).count() == 0:
+            self.status = "completed"
+            self.save()
+    def fechar_meta(self):
+        if self.subtasks.filter(is_completed=False).exists():
             return False
-        else:
-            goal.status = 'completed'
-            goal.save()
-            return True
+        self.status = "completed"
+        self.save()
+        return True
 
 
     

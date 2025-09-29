@@ -17,10 +17,11 @@ class SubGoal(models.Model):
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
 
-    def fechar_subtask(subtask):
-        subtask.is_completed = True
-        subtask.save()
-        subtask.goal.update_progress()
+    def fechar_subtask(self):
+        self.is_completed = True
+        self.save()
+        if hasattr(self.goal, "update_progress"):
+            self.goal.update_progress()
 
     def __str__(self):
         return f"{self.title} ({'Done' if self.is_completed else 'Pending'})"
