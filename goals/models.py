@@ -27,6 +27,25 @@ class Goal(models.Model):
             return 0
         completed = self.subtasks.filter(is_completed=True).count()
         return int((completed / total) * 100)
+    
+    
+    def update_progress(self):
+        total = self.subtasks.count()
+        if total == 0:
+            self.progress = 0
+        else:
+            completed = self.subtasks.filter(is_completed=True).count()
+            self.progress = int((completed / total) * 100)
+        self.save()
+
+    def fechar_meta(goal):
+        if goal.subtasks.filter(is_completed=False).exists():
+            # avisar usuário: ainda há subtasks abertas
+            return False
+        else:
+            goal.status = 'completed'
+            goal.save()
+            return True
 
 class SubGoal(models.Model):
     goal = models.ForeignKey(Goal, on_delete=models.CASCADE, related_name="subtasks")
@@ -42,6 +61,11 @@ class SubGoal(models.Model):
     )
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
+
+    def fechar_subtask(subtask):
+        subtask.is_completed = True
+        subtask.save()
+        subtask.goal.update_progress()
 
     def __str__(self):
         return f"{self.title} ({'Done' if self.is_completed else 'Pending'})"

@@ -4,7 +4,7 @@ from .models import Contribution
 class ContributionForm(forms.ModelForm):
     class meta:
         model = Contribution
-        fields = ['description', 'progresso']
+        fields = ['progress']
 
         def clean_progress_value(self):
             value = self.cleaned_data['progress_value']

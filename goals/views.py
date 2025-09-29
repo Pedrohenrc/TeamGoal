@@ -1,7 +1,8 @@
 from django.urls import reverse_lazy
 from django.views.generic import ListView, DetailView, CreateView, UpdateView
 from django.contrib.auth.mixins import LoginRequiredMixin
-from .models import Goal
+from .models import Goal, Subtask
+from .forms import SubtaskForm
 class GoalCreateView(CreateView, LoginRequiredMixin):
     Model = Goal
     fields = ['title', 'description', 'deadline', 'status']
@@ -36,3 +37,15 @@ class GoalUpdateView (UpdateView, LoginRequiredMixin):
      model = Goal
      fields = ['title', 'description', 'deadline', 'status']
      success_url = reverse_lazy("goat-list")
+    
+class SubtaskCreateView(LoginRequiredMixin, CreateView):
+    model = Subtask
+    form_class = SubtaskForm
+
+    def form_valid(self, form):
+        goal_id = self.kwargs.get("pk")
+        form.instance.goal = Goal.objects.get(pk=goal_id)
+        return super().form_valid(form)
+
+    def get_success_url(self):
+         return reverse_lazy('goal-detail', kwargs={"pk": self.kwargs.get("pk")})

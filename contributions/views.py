@@ -13,8 +13,18 @@ class ContributionCreateView(CreateView):
 
     def form_valid(self, form):
         form.instance.user = self.request.user
+        subtask_id = self.kwargs.get("pk")
         goal_id = self.kwargs.get("pk")
-        form.instance.goal = Goal.objects.get(pk=goal_id)
+
+        if subtask_id:
+            form.instance.subtask = Subtask.objects.get(pk=subtask_id)
+            form.instance.goal = form.instance.subtask.goal
+        elif goal_id:
+            form.instance.goal = Goal.objects.get(pk=goal_id)
+        else:
+            # erro: precisa de subtask ou goal
+            return self.form_invalid(form)
+
         return super().form_valid(form)
 
     def get_success_url(self):
