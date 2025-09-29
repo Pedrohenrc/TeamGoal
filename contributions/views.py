@@ -46,4 +46,9 @@ class ContributionDetailView(DetailView, LoginRequiredMixin):
 class ContributionUpdateView(UpdateView, LoginRequiredMixin):
     Model = Contribution
     """template name"""
-    
+
+class ContributionDeleteView(DeleteView, LoginRequiredMixin):
+    Model = Contribution
+    """template_name = pagina de confirmar"""
+    def get_success_url(self):
+        return reverse_lazy("goal-detail", kwargs={"pk": self.kwargs.get("pk")})
