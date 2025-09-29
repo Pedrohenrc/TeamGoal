@@ -30,7 +30,7 @@ class ContributionCreateView(CreateView):
 
     def get_success_url(self):
         # depois de salvar, volta para a página da goal
-        return reverse_lazy("goal-detail", kwargs={"pk": self.kwargs.get("pk")})
+        return reverse_lazy("goal-detail", kwargs={"pk": self.object.goal.pk})
 
 class ContributionListView(ListView, LoginRequiredMixin):
     model = Contribution
@@ -45,21 +45,27 @@ class ContributionListView(ListView, LoginRequiredMixin):
         
         goal_id = self.kwargs.get("goal_id")
         if goal_id:
-            queryset = queryset.filter(pk=goal_id)
+            queryset = queryset.filter(goal_id=goal_id)
         
         return queryset
 
 class ContributionDetailView(DetailView, LoginRequiredMixin):
-    Model = Contribution
+    model = Contribution
     """template_name"""
     context_object_name = "contribution"
 
 class ContributionUpdateView(UpdateView, LoginRequiredMixin):
-    Model = Contribution
+    model = Contribution
+    form_class = ContributionForm
     """template name"""
 
+    def get_success_url(self):
+        # redireciona para a goal associada
+        return reverse_lazy("goal-detail", kwargs={"pk": self.object.goal.id})
+
+
 class ContributionDeleteView(DeleteView, LoginRequiredMixin):
-    Model = Contribution
+    model = Contribution
     """template_name = pagina de confirmar"""
     def get_success_url(self):
-        return reverse_lazy("goal-detail", kwargs={"pk": self.kwargs.get("pk")})
+        return reverse_lazy("goal-detail", kwargs={"pk": self.object.goal.pk})
