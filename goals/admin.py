@@ -3,9 +3,9 @@ from .models import Goal
 from subgoals.models import SubGoal
 # Register your models here.
 
-class SubGoalInline(admin.TabularInline):  # ou StackedInline se preferir em blocos
+class SubGoalInline(admin.TabularInline): 
     model = SubGoal
-    extra = 1  # mostra 1 linha vazia para adicionar subtarefas
+    extra = 1  
     autocomplete_fields = ("assigned_to",)
     fields = ("title", "is_completed", "assigned_to", "created_at")
     readonly_fields = ("created_at",)
@@ -14,4 +14,8 @@ class SubGoalInline(admin.TabularInline):  # ou StackedInline se preferir em blo
 class GoalAdmin(admin.ModelAdmin):
     list_display = ('title', 'team', 'status', 'deadline','progress', 'created_at', 'updated_at') 
     search_fields = ('title', 'description', 'team__name')        
-    list_filter = ('status', 'title')
+    list_filter = ('status', 'team', 'deadline', 'created_at')
+    ordering = ("-created_at",)
+    inlines = [SubGoalInline]
+    readonly_fields = ("created_at", "updated_at")
+    autocomplete_fields = ("team",)
