@@ -43,6 +43,7 @@ INSTALLED_APPS = [
     "certificates",
     "dashboard",
     "subgoals",
+    "core",
 ]
 
 AUTH_USER_MODEL = "users.CustomUser"
@@ -63,7 +64,7 @@ ROOT_URLCONF = 'TeamGoal.urls'
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [],  # você pode adicionar diretórios extras aqui
+        'DIRS': [BASE_DIR / 'templates'],  # você pode adicionar diretórios extras aqui
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
