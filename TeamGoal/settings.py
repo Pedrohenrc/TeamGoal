@@ -126,3 +126,7 @@ SOCIAL_AUTH_GOOGLE_SECRET = os.environ.get("SOCIAL_AUTH_GOOGLE_SECRET", "")
 
 # Default primary key field type
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+
+LOGIN_REDIRECT_URL = 'core:dashboard'  
+LOGOUT_REDIRECT_URL = 'core:home'      
+LOGIN_URL = 'core:home'   
