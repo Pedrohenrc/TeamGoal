@@ -19,7 +19,7 @@ class TeamDetailView(LoginRequiredMixin, DetailView):
     context_object_name = "team"
 
 class TeamCreateView(LoginRequiredMixin, CreateView):
-    Model = Team
+    model = Team
     form_class = TeamForm
     template_name = "teams/team_form.html"
     success_url = reverse_lazy("team-list")
