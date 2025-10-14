@@ -6,7 +6,7 @@ from .forms import TeamForm
 # Create your views here.
 
 class TeamListView(LoginRequiredMixin, ListView):
-    Model = Team
+    model = Team
     template_name = 'teams/team_list.html'
     context_object_name = 'teams'
 
