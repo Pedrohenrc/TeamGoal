@@ -3,13 +3,15 @@ from django.views.generic import ListView, DetailView, CreateView, UpdateView
 from django.contrib.auth.mixins import LoginRequiredMixin
 from .models import Goal
 class GoalCreateView(CreateView, LoginRequiredMixin):
-    Model = Goal
+    model = Goal
     fields = ['title', 'description', 'deadline', 'status']
+    template_name = "goals/goal_form.html"
     success_url = reverse_lazy("goal-list")
 
 class GoalListView(ListView, LoginRequiredMixin):
-    Model = Goal
+    model = Goal
     context_object_name = "goals"
+    template_name = "goals/goal_list.html"
 
     def get_queryset(self):
         queryset = Goal.objects.all()
@@ -28,12 +30,25 @@ class GoalListView(ListView, LoginRequiredMixin):
 
         return queryset
 
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        queryset = self.get_queryset()
+            
+         
+        context['pending_count'] = queryset.filter(status='pending').count()
+        context['in_progress_count'] = queryset.filter(status='in_progress').count()
+        context['completed_count'] = queryset.filter(status='completed').count()
+            
+        return context
+
 class GoalDetailView (DetailView, LoginRequiredMixin):
         model = Goal
         context_object_name = "goal"
+        template_name = "goals/goal_detail.html"
 
 class GoalUpdateView (UpdateView, LoginRequiredMixin):
      model = Goal
      fields = ['title', 'description', 'deadline', 'status']
+     template_name = "goals/goal_form.html"
      success_url = reverse_lazy("goat-list")
     

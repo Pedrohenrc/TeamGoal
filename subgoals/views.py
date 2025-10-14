@@ -8,6 +8,7 @@ from .forms import SubgoalForm
 class SubgoalCreateView(LoginRequiredMixin, CreateView):
     model = SubGoal
     form_class = SubgoalForm
+    template_name = "subgoals/subgoal_form.html"
 
     def form_valid(self, form):
         goal_id = self.kwargs.get("pk")
@@ -20,6 +21,7 @@ class SubgoalCreateView(LoginRequiredMixin, CreateView):
 class SubgoalDetailView(LoginRequiredMixin, DetailView):
     model = SubGoal
     context_object_name = "subgoal"
+    template_name = "subgoals/subgoal_detail.html"
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
@@ -30,6 +32,7 @@ class SubgoalDetailView(LoginRequiredMixin, DetailView):
 class SubgoalUpdateView(LoginRequiredMixin, UpdateView):
     model = SubGoal
     fields = ['title', 'description', 'assigned_to', 'is_completed']
+    template_name = "subgoals/subgoal_list.html"
 
     def form_valid(self, form):
         response = super().form_valid(form)
@@ -39,6 +42,7 @@ class SubgoalUpdateView(LoginRequiredMixin, UpdateView):
 class SubgoalListView(LoginRequiredMixin, ListView):
     model = SubGoal
     context_object_name = "subgoals"
+    template_name = "subgoals/subgoal_confirm_delete.html"
 
     def get_queryset(self):
         goal_id = self.kwargs["goal_id"]

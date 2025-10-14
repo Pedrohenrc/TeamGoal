@@ -67,13 +67,13 @@
                     <select 
                         name="status" 
                         id="status"
-                        class="w-full px-4 py-3 bg-white/5 border border-white/10 rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-500 text-white"
+                        class="w-full px-4 py-3 bg-slate-800 border border-white/20 rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-500 text-white"
                         onchange="this.form.submit()"
                     >
-                        <option value="">Todos os status</option>
-                        <option value="pending" {% if request.GET.status == 'pending' %}selected{% endif %}>Pendente</option>
-                        <option value="in_progress" {% if request.GET.status == 'in_progress' %}selected{% endif %}>Em Progresso</option>
-                        <option value="completed" {% if request.GET.status == 'completed' %}selected{% endif %}>Concluída</option>
+                        <option value="" class="bg-slate-800 text-white">Todos os status</option>
+                        <option value="pending" {% if request.GET.status == 'pending' %}selected{% endif %} class="bg-slate-800 text-white">⏳ Pendente</option>
+                        <option value="in_progress" {% if request.GET.status == 'in_progress' %}selected{% endif %} class="bg-slate-800 text-white">⚡ Em Progresso</option>
+                        <option value="completed" {% if request.GET.status == 'completed' %}selected{% endif %} class="bg-slate-800 text-white">✓ Concluída</option>
                     </select>
                 </div>
 
@@ -83,12 +83,12 @@
                     <select 
                         name="team" 
                         id="team"
-                        class="w-full px-4 py-3 bg-white/5 border border-white/10 rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-500 text-white"
+                        class="w-full px-4 py-3 bg-slate-800 border border-white/20 rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-500 text-white"
                         onchange="this.form.submit()"
                     >
-                        <option value="">Todos os times</option>
+                        <option value="" class="bg-slate-800 text-white">Todos os times</option>
                         {% for team in user.Teams.all %}
-                        <option value="{{ team.id }}" {% if request.GET.team == team.id|stringformat:"s" %}selected{% endif %}>
+                        <option value="{{ team.id }}" {% if request.GET.team == team.id|stringformat:"s" %}selected{% endif %} class="bg-slate-800 text-white">
                             {{ team.name }}
                         </option>
                         {% endfor %}
@@ -101,12 +101,12 @@
                     <select 
                         name="user" 
                         id="user"
-                        class="w-full px-4 py-3 bg-white/5 border border-white/10 rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-500 text-white"
+                        class="w-full px-4 py-3 bg-slate-800 border border-white/20 rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-500 text-white"
                         onchange="this.form.submit()"
                     >
-                        <option value="">Todos os usuários</option>
-                        <option value="{{ user.id }}" {% if request.GET.user == user.id|stringformat:"s" %}selected{% endif %}>
-                            Minhas contribuições
+                        <option value="" class="bg-slate-800 text-white">Todos os usuários</option>
+                        <option value="{{ user.id }}" {% if request.GET.user == user.id|stringformat:"s" %}selected{% endif %} class="bg-slate-800 text-white">
+                            👤 Minhas contribuições
                         </option>
                     </select>
                 </div>
@@ -133,7 +133,7 @@
                         </svg>
                     </div>
                 </div>
-                <div class="text-3xl font-bold">{{ goals.count }}</div>
+                <div class="text-3xl font-bold">{{ goals|length }}</div>
             </div>
 
             <div class="bg-white/5 backdrop-blur-sm rounded-2xl p-6 border border-white/10">
@@ -145,7 +145,7 @@
                         </svg>
                     </div>
                 </div>
-                <div class="text-3xl font-bold">{{ goals|length|add:"0" }}</div>
+                <div class="text-3xl font-bold">{{ pending_count }}</div>
             </div>
 
             <div class="bg-white/5 backdrop-blur-sm rounded-2xl p-6 border border-white/10">
@@ -157,7 +157,7 @@
                         </svg>
                     </div>
                 </div>
-                <div class="text-3xl font-bold">{{ goals|length|add:"0" }}</div>
+                <div class="text-3xl font-bold">{{ in_progress_count }}</div>
             </div>
 
             <div class="bg-white/5 backdrop-blur-sm rounded-2xl p-6 border border-white/10">
@@ -169,7 +169,7 @@
                         </svg>
                     </div>
                 </div>
-                <div class="text-3xl font-bold">{{ goals|length|add:"0" }}</div>
+                <div class="text-3xl font-bold">{{ completed_count }}</div>
             </div>
         </div>
 

@@ -10,7 +10,7 @@ from subgoals.models import SubGoal
 class ContributionCreateView(CreateView):
     model = Contribution
     form_class = ContributionForm
-    """template_name"""
+    template_name = "contributions/contribution_form.html"
 
     def form_valid(self, form):
         form.instance.user = self.request.user
@@ -35,6 +35,7 @@ class ContributionCreateView(CreateView):
 class ContributionListView(ListView, LoginRequiredMixin):
     model = Contribution
     context_object_name = 'contributions'
+    template_name = "contributions/contribution_list.html"  
 
     def get_queryset(self):
         queryset = Contribution.objects.all()
@@ -51,13 +52,13 @@ class ContributionListView(ListView, LoginRequiredMixin):
 
 class ContributionDetailView(DetailView, LoginRequiredMixin):
     model = Contribution
-    """template_name"""
+    template_name = "contributions/contribution_detail.html"
     context_object_name = "contribution"
 
 class ContributionUpdateView(UpdateView, LoginRequiredMixin):
     model = Contribution
     form_class = ContributionForm
-    """template name"""
+    template_name = "contributions/contribution_form.html"
 
     def get_success_url(self):
         # redireciona para a goal associada
@@ -66,6 +67,6 @@ class ContributionUpdateView(UpdateView, LoginRequiredMixin):
 
 class ContributionDeleteView(DeleteView, LoginRequiredMixin):
     model = Contribution
-    """template_name = pagina de confirmar"""
+    template_name = "contributions/contribution_confirm_delete.html"
     def get_success_url(self):
         return reverse_lazy("goal-detail", kwargs={"pk": self.object.goal.pk})
