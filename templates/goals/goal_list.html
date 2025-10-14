@@ -1,0 +1,301 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Metas - GoalTracker</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-gradient-to-br from-slate-900 via-purple-900 to-slate-900 text-white min-h-screen">
+    
+    <!-- Navbar -->
+    <nav class="bg-black/20 backdrop-blur-lg border-b border-white/10">
+        <div class="container mx-auto px-6 py-4">
+            <div class="flex justify-between items-center">
+                <div class="flex items-center gap-8">
+                    <a href="{% url 'core:home' %}" class="text-2xl font-bold bg-gradient-to-r from-blue-400 to-purple-500 bg-clip-text text-transparent">
+                        🎯 GoalTracker
+                    </a>
+                    <div class="hidden md:flex gap-6">
+                        <a href="{% url 'core:dashboard' %}" class="hover:text-purple-400 transition">Dashboard</a>
+                        <a href="{% url 'team-list' %}" class="hover:text-purple-400 transition">Times</a>
+                        <a href="{% url 'goal-list' %}" class="text-purple-400 font-semibold">Metas</a>
+                    </div>
+                </div>
+                <div class="flex items-center gap-4">
+                    <div class="flex items-center gap-3">
+                        {% if user.photo %}
+                        <img src="{{ user.photo.url }}" alt="{{ user.username }}" class="w-10 h-10 rounded-full border-2 border-purple-500">
+                        {% else %}
+                        <div class="w-10 h-10 rounded-full bg-gradient-to-br from-blue-500 to-purple-600 flex items-center justify-center font-bold">
+                            {{ user.username|first|upper }}
+                        </div>
+                        {% endif %}
+                    </div>
+                    <a href="{% url 'logout' %}" class="px-4 py-2 bg-red-500/20 hover:bg-red-500/30 rounded-lg transition text-sm">
+                        Sair
+                    </a>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Main Content -->
+    <div class="container mx-auto px-6 py-8">
+        
+        <!-- Header -->
+        <div class="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 mb-8">
+            <div>
+                <h1 class="text-4xl md:text-5xl font-bold mb-2">Todas as Metas</h1>
+                <p class="text-xl text-gray-400">Acompanhe o progresso de todas as metas dos seus times</p>
+            </div>
+            <a href="{% url 'goal-create' %}" class="px-6 py-3 bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-700 hover:to-pink-700 rounded-xl font-semibold transition-all duration-300 hover:scale-105 shadow-lg flex items-center gap-2">
+                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/>
+                </svg>
+                Nova Meta
+            </a>
+        </div>
+
+        <!-- Filters -->
+        <div class="bg-white/5 backdrop-blur-sm rounded-2xl p-6 border border-white/10 mb-8">
+            <form method="get" class="flex flex-col md:flex-row gap-4">
+                <!-- Status Filter -->
+                <div class="flex-1">
+                    <label for="status" class="block text-sm font-semibold mb-2">Status</label>
+                    <select 
+                        name="status" 
+                        id="status"
+                        class="w-full px-4 py-3 bg-white/5 border border-white/10 rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-500 text-white"
+                        onchange="this.form.submit()"
+                    >
+                        <option value="">Todos os status</option>
+                        <option value="pending" {% if request.GET.status == 'pending' %}selected{% endif %}>Pendente</option>
+                        <option value="in_progress" {% if request.GET.status == 'in_progress' %}selected{% endif %}>Em Progresso</option>
+                        <option value="completed" {% if request.GET.status == 'completed' %}selected{% endif %}>Concluída</option>
+                    </select>
+                </div>
+
+                <!-- Team Filter -->
+                <div class="flex-1">
+                    <label for="team" class="block text-sm font-semibold mb-2">Time</label>
+                    <select 
+                        name="team" 
+                        id="team"
+                        class="w-full px-4 py-3 bg-white/5 border border-white/10 rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-500 text-white"
+                        onchange="this.form.submit()"
+                    >
+                        <option value="">Todos os times</option>
+                        {% for team in user.Teams.all %}
+                        <option value="{{ team.id }}" {% if request.GET.team == team.id|stringformat:"s" %}selected{% endif %}>
+                            {{ team.name }}
+                        </option>
+                        {% endfor %}
+                    </select>
+                </div>
+
+                <!-- User Filter -->
+                <div class="flex-1">
+                    <label for="user" class="block text-sm font-semibold mb-2">Usuário</label>
+                    <select 
+                        name="user" 
+                        id="user"
+                        class="w-full px-4 py-3 bg-white/5 border border-white/10 rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-500 text-white"
+                        onchange="this.form.submit()"
+                    >
+                        <option value="">Todos os usuários</option>
+                        <option value="{{ user.id }}" {% if request.GET.user == user.id|stringformat:"s" %}selected{% endif %}>
+                            Minhas contribuições
+                        </option>
+                    </select>
+                </div>
+
+                <!-- Clear Filters Button -->
+                {% if request.GET.status or request.GET.team or request.GET.user %}
+                <div class="flex items-end">
+                    <a href="{% url 'goal-list' %}" class="px-6 py-3 bg-red-500/20 hover:bg-red-500/30 border border-red-500/50 rounded-lg font-semibold transition whitespace-nowrap">
+                        Limpar Filtros
+                    </a>
+                </div>
+                {% endif %}
+            </form>
+        </div>
+
+        <!-- Stats Cards -->
+        <div class="grid grid-cols-1 md:grid-cols-4 gap-6 mb-8">
+            <div class="bg-white/5 backdrop-blur-sm rounded-2xl p-6 border border-white/10">
+                <div class="flex items-center justify-between mb-3">
+                    <div class="text-gray-400 text-sm">Total de Metas</div>
+                    <div class="w-10 h-10 bg-gradient-to-br from-purple-500 to-pink-600 rounded-lg flex items-center justify-center">
+                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2"/>
+                        </svg>
+                    </div>
+                </div>
+                <div class="text-3xl font-bold">{{ goals.count }}</div>
+            </div>
+
+            <div class="bg-white/5 backdrop-blur-sm rounded-2xl p-6 border border-white/10">
+                <div class="flex items-center justify-between mb-3">
+                    <div class="text-gray-400 text-sm">Pendentes</div>
+                    <div class="w-10 h-10 bg-gradient-to-br from-gray-500 to-slate-600 rounded-lg flex items-center justify-center">
+                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/>
+                        </svg>
+                    </div>
+                </div>
+                <div class="text-3xl font-bold">{{ goals|length|add:"0" }}</div>
+            </div>
+
+            <div class="bg-white/5 backdrop-blur-sm rounded-2xl p-6 border border-white/10">
+                <div class="flex items-center justify-between mb-3">
+                    <div class="text-gray-400 text-sm">Em Progresso</div>
+                    <div class="w-10 h-10 bg-gradient-to-br from-blue-500 to-cyan-600 rounded-lg flex items-center justify-center">
+                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"/>
+                        </svg>
+                    </div>
+                </div>
+                <div class="text-3xl font-bold">{{ goals|length|add:"0" }}</div>
+            </div>
+
+            <div class="bg-white/5 backdrop-blur-sm rounded-2xl p-6 border border-white/10">
+                <div class="flex items-center justify-between mb-3">
+                    <div class="text-gray-400 text-sm">Concluídas</div>
+                    <div class="w-10 h-10 bg-gradient-to-br from-green-500 to-emerald-600 rounded-lg flex items-center justify-center">
+                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/>
+                        </svg>
+                    </div>
+                </div>
+                <div class="text-3xl font-bold">{{ goals|length|add:"0" }}</div>
+            </div>
+        </div>
+
+        <!-- Goals List -->
+        {% if goals %}
+        <div class="space-y-4">
+            {% for goal in goals %}
+            <a href="{% url 'goal-detail' goal.pk %}" class="block bg-white/5 backdrop-blur-sm rounded-xl p-6 border border-white/10 hover:bg-white/10 transition-all duration-300 hover:scale-[1.01] group">
+                <div class="flex flex-col lg:flex-row lg:items-center justify-between gap-4">
+                    
+                    <!-- Left Side - Goal Info -->
+                    <div class="flex-1">
+                        <div class="flex items-start justify-between mb-3">
+                            <div class="flex-1">
+                                <h3 class="text-2xl font-bold mb-2 group-hover:text-purple-400 transition">
+                                    {{ goal.title }}
+                                </h3>
+                                <p class="text-gray-400 mb-3">{{ goal.description|truncatewords:25 }}</p>
+                                <div class="flex flex-wrap items-center gap-3 text-sm">
+                                    <div class="flex items-center gap-2 px-3 py-1 bg-blue-500/10 rounded-lg">
+                                        <svg class="w-4 h-4 text-blue-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z"/>
+                                        </svg>
+                                        <span class="text-blue-300">{{ goal.team.name }}</span>
+                                    </div>
+                                    <div class="flex items-center gap-2 text-gray-400">
+                                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"/>
+                                        </svg>
+                                        <span>Prazo: {{ goal.deadline|date:"d/m/Y" }}</span>
+                                    </div>
+                                    <div class="flex items-center gap-2 text-gray-400">
+                                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2"/>
+                                        </svg>
+                                        <span>{{ goal.subtasks.count }} subtarefas</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Right Side - Progress & Status -->
+                    <div class="lg:w-80 flex flex-col gap-4">
+                        <!-- Status Badge -->
+                        <div class="flex justify-end">
+                            {% if goal.status == 'completed' %}
+                            <span class="px-4 py-2 bg-green-500/20 text-green-300 rounded-lg text-sm font-semibold">
+                                ✓ CONCLUÍDA
+                            </span>
+                            {% elif goal.status == 'in_progress' %}
+                            <span class="px-4 py-2 bg-blue-500/20 text-blue-300 rounded-lg text-sm font-semibold">
+                                ⚡ EM PROGRESSO
+                            </span>
+                            {% else %}
+                            <span class="px-4 py-2 bg-gray-500/20 text-gray-300 rounded-lg text-sm font-semibold">
+                                ⏳ PENDENTE
+                            </span>
+                            {% endif %}
+                        </div>
+
+                        <!-- Progress Bar -->
+                        <div>
+                            <div class="flex justify-between text-sm mb-2">
+                                <span class="text-gray-400">Progresso</span>
+                                <span class="font-bold text-lg">{{ goal.progress }}%</span>
+                            </div>
+                            <div class="w-full bg-white/10 rounded-full h-3 overflow-hidden">
+                                <div 
+                                    class="h-full rounded-full transition-all duration-500 {% if goal.progress == 100 %}bg-gradient-to-r from-green-500 to-emerald-600{% elif goal.progress >= 50 %}bg-gradient-to-r from-blue-500 to-purple-600{% else %}bg-gradient-to-r from-orange-500 to-red-600{% endif %}"
+                                    style="width: {{ goal.progress }}%"
+                                ></div>
+                            </div>
+                        </div>
+
+                        <!-- View Details Link -->
+                        <div class="flex items-center justify-end text-purple-400 opacity-0 group-hover:opacity-100 transition-opacity">
+                            <span class="text-sm font-semibold">Ver detalhes</span>
+                            <svg class="w-5 h-5 ml-1 group-hover:translate-x-1 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/>
+                            </svg>
+                        </div>
+                    </div>
+                </div>
+            </a>
+            {% endfor %}
+        </div>
+
+        {% else %}
+        <!-- Empty State -->
+        <div class="bg-white/5 backdrop-blur-sm rounded-3xl p-16 border border-white/10 text-center">
+            <div class="w-24 h-24 bg-gradient-to-br from-purple-500/20 to-pink-600/20 rounded-full flex items-center justify-center mx-auto mb-6">
+                <svg class="w-12 h-12 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2"/>
+                </svg>
+            </div>
+            <h2 class="text-3xl font-bold mb-4">
+                {% if request.GET.status or request.GET.team or request.GET.user %}
+                Nenhuma meta encontrada
+                {% else %}
+                Nenhuma meta ainda
+                {% endif %}
+            </h2>
+            <p class="text-xl text-gray-400 mb-8 max-w-md mx-auto">
+                {% if request.GET.status or request.GET.team or request.GET.user %}
+                Tente limpar os filtros para ver mais metas
+                {% else %}
+                Comece criando sua primeira meta para acompanhar seus objetivos!
+                {% endif %}
+            </p>
+            {% if request.GET.status or request.GET.team or request.GET.user %}
+            <a href="{% url 'goal-list' %}" class="inline-flex items-center gap-2 px-8 py-4 bg-white/10 hover:bg-white/20 border border-white/20 rounded-xl font-bold text-lg transition-all duration-300 hover:scale-105">
+                Limpar Filtros
+            </a>
+            {% else %}
+            <a href="{% url 'goal-create' %}" class="inline-flex items-center gap-2 px-8 py-4 bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-700 hover:to-pink-700 rounded-xl font-bold text-lg transition-all duration-300 hover:scale-105 shadow-xl">
+                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/>
+                </svg>
+                Criar Primeira Meta
+            </a>
+            {% endif %}
+        </div>
+        {% endif %}
+
+    </div>
+
+</body>
+</html>
