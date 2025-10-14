@@ -1,0 +1,311 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{{ team.name }} - GoalTracker</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-gradient-to-br from-slate-900 via-purple-900 to-slate-900 text-white min-h-screen">
+    
+    <!-- Navbar -->
+    <nav class="bg-black/20 backdrop-blur-lg border-b border-white/10">
+        <div class="container mx-auto px-6 py-4">
+            <div class="flex justify-between items-center">
+                <div class="flex items-center gap-8">
+                    <a href="{% url 'core:home' %}" class="text-2xl font-bold bg-gradient-to-r from-blue-400 to-purple-500 bg-clip-text text-transparent">
+                        🎯 GoalTracker
+                    </a>
+                    <div class="hidden md:flex gap-6">
+                        <a href="{% url 'core:dashboard' %}" class="hover:text-purple-400 transition">Dashboard</a>
+                        <a href="{% url 'team-list' %}" class="text-purple-400 font-semibold">Times</a>
+                        <a href="{% url 'goal-list' %}" class="hover:text-purple-400 transition">Metas</a>
+                    </div>
+                </div>
+                <div class="flex items-center gap-4">
+                    <div class="flex items-center gap-3">
+                        {% if user.photo %}
+                        <img src="{{ user.photo.url }}" alt="{{ user.username }}" class="w-10 h-10 rounded-full border-2 border-purple-500">
+                        {% else %}
+                        <div class="w-10 h-10 rounded-full bg-gradient-to-br from-blue-500 to-purple-600 flex items-center justify-center font-bold">
+                            {{ user.username|first|upper }}
+                        </div>
+                        {% endif %}
+                    </div>
+                    <a href="{% url 'logout' %}" class="px-4 py-2 bg-red-500/20 hover:bg-red-500/30 rounded-lg transition text-sm">
+                        Sair
+                    </a>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Main Content -->
+    <div class="container mx-auto px-6 py-8">
+        
+        <!-- Breadcrumb -->
+        <div class="flex items-center gap-2 text-sm mb-6">
+            <a href="{% url 'core:dashboard' %}" class="text-gray-400 hover:text-white transition">Dashboard</a>
+            <svg class="w-4 h-4 text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/>
+            </svg>
+            <a href="{% url 'team-list' %}" class="text-gray-400 hover:text-white transition">Times</a>
+            <svg class="w-4 h-4 text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/>
+            </svg>
+            <span class="text-white">{{ team.name }}</span>
+        </div>
+
+        <!-- Team Header -->
+        <div class="bg-gradient-to-r from-blue-600/20 to-purple-600/20 backdrop-blur-sm rounded-3xl p-8 border border-white/10 mb-8">
+            <div class="flex flex-col lg:flex-row justify-between items-start lg:items-center gap-6">
+                <div class="flex-1">
+                    <div class="flex items-center gap-3 mb-3">
+                        <h1 class="text-4xl md:text-5xl font-bold">{{ team.name }}</h1>
+                        {% if team.owner == user %}
+                        <span class="px-3 py-1 bg-yellow-500/20 text-yellow-300 rounded-full text-sm font-bold">
+                            OWNER
+                        </span>
+                        {% endif %}
+                    </div>
+                    <p class="text-xl text-gray-300 mb-4">{{ team.description|default:"Sem descrição." }}</p>
+                    <div class="flex items-center gap-4 text-sm text-gray-400">
+                        <div class="flex items-center gap-2">
+                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"/>
+                            </svg>
+                            <span>Criado por {{ team.owner.username }}</span>
+                        </div>
+                        <div class="flex items-center gap-2">
+                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"/>
+                            </svg>
+                            <span>{{ team.created_at|date:"d/m/Y" }}</span>
+                        </div>
+                    </div>
+                </div>
+                
+                {% if team.owner == user %}
+                <div class="flex flex-wrap gap-3">
+                    <a href="{% url 'team-edit' team.pk %}" class="px-6 py-3 bg-white/10 hover:bg-white/20 border border-white/20 rounded-lg font-semibold transition flex items-center gap-2">
+                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"/>
+                        </svg>
+                        Editar Time
+                    </a>
+                </div>
+                {% endif %}
+            </div>
+        </div>
+
+        <!-- Stats Row -->
+        <div class="grid grid-cols-1 md:grid-cols-4 gap-6 mb-8">
+            <div class="bg-white/5 backdrop-blur-sm rounded-2xl p-6 border border-white/10">
+                <div class="flex items-center justify-between mb-3">
+                    <div class="text-gray-400 text-sm">Total de Membros</div>
+                    <div class="w-10 h-10 bg-gradient-to-br from-blue-500 to-purple-600 rounded-lg flex items-center justify-center">
+                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z"/>
+                        </svg>
+                    </div>
+                </div>
+                <div class="text-3xl font-bold">{{ team.members.count }}</div>
+            </div>
+
+            <div class="bg-white/5 backdrop-blur-sm rounded-2xl p-6 border border-white/10">
+                <div class="flex items-center justify-between mb-3">
+                    <div class="text-gray-400 text-sm">Total de Metas</div>
+                    <div class="w-10 h-10 bg-gradient-to-br from-purple-500 to-pink-600 rounded-lg flex items-center justify-center">
+                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2"/>
+                        </svg>
+                    </div>
+                </div>
+                <div class="text-3xl font-bold">{{ team.goals.count }}</div>
+            </div>
+
+            <div class="bg-white/5 backdrop-blur-sm rounded-2xl p-6 border border-white/10">
+                <div class="flex items-center justify-between mb-3">
+                    <div class="text-gray-400 text-sm">Metas Ativas</div>
+                    <div class="w-10 h-10 bg-gradient-to-br from-blue-500 to-green-600 rounded-lg flex items-center justify-center">
+                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"/>
+                        </svg>
+                    </div>
+                </div>
+                <div class="text-3xl font-bold">{{ team.goals.exclude.count }}</div>
+            </div>
+
+            <div class="bg-white/5 backdrop-blur-sm rounded-2xl p-6 border border-white/10">
+                <div class="flex items-center justify-between mb-3">
+                    <div class="text-gray-400 text-sm">Metas Concluídas</div>
+                    <div class="w-10 h-10 bg-gradient-to-br from-green-500 to-blue-600 rounded-lg flex items-center justify-center">
+                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/>
+                        </svg>
+                    </div>
+                </div>
+                <div class="text-3xl font-bold">{{ team.goals.filter.count }}</div>
+            </div>
+        </div>
+
+        <!-- Two Column Layout -->
+        <div class="grid lg:grid-cols-3 gap-8">
+            
+            <!-- Left Column - Members -->
+            <div class="lg:col-span-1">
+                <div class="bg-white/5 backdrop-blur-sm rounded-2xl p-6 border border-white/10">
+                    <div class="flex items-center justify-between mb-6">
+                        <h2 class="text-2xl font-bold">Membros</h2>
+                        <span class="px-3 py-1 bg-purple-500/20 text-purple-300 rounded-full text-sm font-semibold">
+                            {{ team.members.count }}
+                        </span>
+                    </div>
+
+                    <div class="space-y-3">
+                        {% for member in team.members.all %}
+                        <div class="flex items-center gap-3 p-3 bg-white/5 rounded-lg hover:bg-white/10 transition">
+                            {% if member.photo %}
+                            <img src="{{ member.photo.url }}" alt="{{ member.username }}" class="w-12 h-12 rounded-full border-2 border-purple-500">
+                            {% else %}
+                            <div class="w-12 h-12 rounded-full bg-gradient-to-br from-blue-500 to-purple-600 flex items-center justify-center font-bold text-lg">
+                                {{ member.username|first|upper }}
+                            </div>
+                            {% endif %}
+                            <div class="flex-1 min-w-0">
+                                <div class="font-semibold flex items-center gap-2">
+                                    <span class="truncate">{{ member.username }}</span>
+                                    {% if member == team.owner %}
+                                    <span class="px-2 py-0.5 bg-yellow-500/20 text-yellow-300 rounded text-xs font-bold">
+                                        LÍDER
+                                    </span>
+                                    {% endif %}
+                                </div>
+                                {% if member.role %}
+                                <div class="text-sm text-gray-400 truncate">{{ member.role }}</div>
+                                {% endif %}
+                            </div>
+                        </div>
+                        {% empty %}
+                        <div class="text-center py-8 text-gray-400">
+                            Nenhum membro ainda
+                        </div>
+                        {% endfor %}
+                    </div>
+
+                    {% if team.owner == user %}
+                    <button class="w-full mt-6 px-4 py-3 bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 rounded-lg font-semibold transition-all duration-300 hover:scale-105 flex items-center justify-center gap-2">
+                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M18 9v3m0 0v3m0-3h3m-3 0h-3m-2-5a4 4 0 11-8 0 4 4 0 018 0zM3 20a6 6 0 0112 0v1H3v-1z"/>
+                        </svg>
+                        Adicionar Membro
+                    </button>
+                    {% endif %}
+                </div>
+            </div>
+
+            <!-- Right Column - Goals -->
+            <div class="lg:col-span-2">
+                <div class="flex items-center justify-between mb-6">
+                    <h2 class="text-3xl font-bold">Metas do Time</h2>
+                    {% if team.owner == user or user in team.members.all %}
+                    <a href="{% url 'goal-create' %}" class="px-6 py-3 bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-700 hover:to-pink-700 rounded-lg font-semibold transition-all duration-300 hover:scale-105 flex items-center gap-2">
+                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/>
+                        </svg>
+                        Nova Meta
+                    </a>
+                    {% endif %}
+                </div>
+
+                {% if team.goals.all %}
+                <div class="space-y-4">
+                    {% for goal in team.goals.all %}
+                    <a href="{% url 'goal-detail' goal.pk %}" class="block bg-white/5 backdrop-blur-sm rounded-xl p-6 border border-white/10 hover:bg-white/10 transition-all duration-300 hover:scale-[1.02] group">
+                        <div class="flex items-start justify-between mb-3">
+                            <div class="flex-1">
+                                <h3 class="text-xl font-bold mb-1 group-hover:text-purple-400 transition">{{ goal.title }}</h3>
+                                <p class="text-gray-400 text-sm">{{ goal.description|truncatewords:20 }}</p>
+                            </div>
+                            <div class="ml-4">
+                                {% if goal.status == 'completed' %}
+                                <span class="px-3 py-1 bg-green-500/20 text-green-300 rounded-full text-xs font-semibold whitespace-nowrap">
+                                    CONCLUÍDA
+                                </span>
+                                {% elif goal.status == 'in_progress' %}
+                                <span class="px-3 py-1 bg-blue-500/20 text-blue-300 rounded-full text-xs font-semibold whitespace-nowrap">
+                                    EM PROGRESSO
+                                </span>
+                                {% else %}
+                                <span class="px-3 py-1 bg-gray-500/20 text-gray-300 rounded-full text-xs font-semibold whitespace-nowrap">
+                                    PENDENTE
+                                </span>
+                                {% endif %}
+                            </div>
+                        </div>
+
+                        <!-- Progress Bar -->
+                        <div class="mb-4">
+                            <div class="flex justify-between text-sm mb-2">
+                                <span class="text-gray-400">Progresso</span>
+                                <span class="font-semibold">{{ goal.progress }}%</span>
+                            </div>
+                            <div class="w-full bg-white/10 rounded-full h-2 overflow-hidden">
+                                <div class="bg-gradient-to-r from-blue-500 to-purple-600 h-full rounded-full transition-all duration-500" style="width: {{ goal.progress }}%"></div>
+                            </div>
+                        </div>
+
+                        <div class="flex items-center justify-between text-sm">
+                            <div class="flex items-center gap-4">
+                                <div class="flex items-center gap-2 text-gray-400">
+                                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"/>
+                                    </svg>
+                                    <span>{{ goal.deadline|date:"d/m/Y" }}</span>
+                                </div>
+                                <div class="flex items-center gap-2 text-gray-400">
+                                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2"/>
+                                    </svg>
+                                    <span>{{ goal.subtasks.count }} subtarefas</span>
+                                </div>
+                            </div>
+                            <div class="text-purple-400 opacity-0 group-hover:opacity-100 transition-opacity flex items-center gap-1">
+                                <span class="text-sm font-semibold">Ver detalhes</span>
+                                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/>
+                                </svg>
+                            </div>
+                        </div>
+                    </a>
+                    {% endfor %}
+                </div>
+
+                {% else %}
+                <!-- Empty State for Goals -->
+                <div class="bg-white/5 backdrop-blur-sm rounded-2xl p-12 border border-white/10 text-center">
+                    <div class="w-20 h-20 bg-gradient-to-br from-purple-500/20 to-pink-600/20 rounded-full flex items-center justify-center mx-auto mb-4">
+                        <svg class="w-10 h-10 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2"/>
+                        </svg>
+                    </div>
+                    <h3 class="text-xl font-bold mb-2">Nenhuma meta ainda</h3>
+                    <p class="text-gray-400 mb-6">Este time ainda não tem metas definidas</p>
+                    {% if team.owner == user or user in team.members.all %}
+                    <a href="{% url 'goal-create' %}" class="inline-flex items-center gap-2 px-6 py-3 bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-700 hover:to-pink-700 rounded-lg font-semibold transition-all duration-300 hover:scale-105">
+                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/>
+                        </svg>
+                        Criar Primeira Meta
+                    </a>
+                    {% endif %}
+                </div>
+                {% endif %}
+            </div>
+        </div>
+
+    </div>
+
+</body>
+</html>
