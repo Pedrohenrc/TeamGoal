@@ -210,7 +210,7 @@
                 <div class="flex items-center justify-between mb-6">
                     <h2 class="text-3xl font-bold">Metas do Time</h2>
                     {% if team.owner == user or user in team.members.all %}
-                    <a href="{% url 'goal-create' %}" class="px-6 py-3 bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-700 hover:to-pink-700 rounded-lg font-semibold transition-all duration-300 hover:scale-105 flex items-center gap-2">
+                    <a href="{% url 'goal-create-for-team' team.pk %}" class="px-6 py-3 bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-700 hover:to-pink-700 rounded-lg font-semibold transition-all duration-300 hover:scale-105 flex items-center gap-2">
                         <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/>
                         </svg>

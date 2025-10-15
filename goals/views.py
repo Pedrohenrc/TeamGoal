@@ -2,12 +2,43 @@ from django.urls import reverse_lazy
 from django.views.generic import ListView, DetailView, CreateView, UpdateView
 from django.contrib.auth.mixins import LoginRequiredMixin
 from .models import Goal
+from teams.models import Team
 class GoalCreateView(CreateView, LoginRequiredMixin):
     model = Goal
     template_name = "goals/goal_form.html"
     fields = ['title', 'description', 'deadline', 'status']
     success_url = reverse_lazy("goal-list")
 
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        team_id = self.kwargs.get('team_id')
+
+        if team_id:
+            try:
+                team = Team.Objects.get(pk=team_id)
+                if self.request.user in team.members.all() or self.request.user == team.owner:
+                    context['team'] = team
+                    context['selected_team_id'] = team_id
+            except Team.DoesNotExist:
+                pass
+    
+    def form_valid(self, form):
+        team_id = self.kwargs.get('team_id')
+
+        if team_id:
+            try:
+                team = Team.objects.get(pk=team_id)
+                if self.request.user in team.members.all() or self.request.user == team.owner:
+                    form.instance.team = team
+                else:
+                    return self.form_invalid(form)
+            except Team.DoesNotExist:
+                return self.form_invalid
+        else:
+            return self.form_invalid(form)
+        
+        return super().form_valid(form)
+        
 class GoalListView(ListView, LoginRequiredMixin):
     model = Goal
     context_object_name = "goals"
