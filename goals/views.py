@@ -50,5 +50,5 @@ class GoalUpdateView (UpdateView, LoginRequiredMixin):
     model = Goal
     fields = ['title', 'description', 'deadline', 'status']
     template_name = "goals/goal_form.html"
-    success_url = reverse_lazy("goat-list")
+    success_url = reverse_lazy("goal-list")
     
