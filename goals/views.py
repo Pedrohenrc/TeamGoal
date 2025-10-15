@@ -7,21 +7,24 @@ class GoalCreateView(CreateView, LoginRequiredMixin):
     model = Goal
     template_name = "goals/goal_form.html"
     fields = ['title', 'description', 'deadline', 'status']
-    success_url = reverse_lazy("goal-list")
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         team_id = self.kwargs.get('team_id')
 
+        print(f"DEBUG: team_id = {team_id}")
+
         if team_id:
             try:
                 team = Team.objects.get(pk=team_id)
+
                 if self.request.user in team.members.all() or self.request.user == team.owner:
                     context['team'] = team
                     context['selected_team_id'] = team_id
             except Team.DoesNotExist:
                 pass
-    
+
+        return context
     def form_valid(self, form):
         team_id = self.kwargs.get('team_id')
 
@@ -39,6 +42,11 @@ class GoalCreateView(CreateView, LoginRequiredMixin):
         
         return super().form_valid(form)
         
+    def get_success_url(self):
+        team_id = self.kwargs.get('team_id')
+        if team_id:
+            return reverse_lazy('team-detail', kwargs={'pk': team_id})
+        return reverse_lazy('goal-list')
 class GoalListView(ListView, LoginRequiredMixin):
     model = Goal
     context_object_name = "goals"
