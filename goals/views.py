@@ -4,8 +4,8 @@ from django.contrib.auth.mixins import LoginRequiredMixin
 from .models import Goal
 class GoalCreateView(CreateView, LoginRequiredMixin):
     model = Goal
-    fields = ['title', 'description', 'deadline', 'status']
     template_name = "goals/goal_form.html"
+    fields = ['title', 'description', 'deadline', 'status']
     success_url = reverse_lazy("goal-list")
 
 class GoalListView(ListView, LoginRequiredMixin):
@@ -42,13 +42,13 @@ class GoalListView(ListView, LoginRequiredMixin):
         return context
 
 class GoalDetailView (DetailView, LoginRequiredMixin):
-        model = Goal
-        context_object_name = "goal"
-        template_name = "goals/goal_detail.html"
+    model = Goal
+    context_object_name = "goal"
+    template_name = "goals/goal_detail.html"
 
 class GoalUpdateView (UpdateView, LoginRequiredMixin):
-     model = Goal
-     fields = ['title', 'description', 'deadline', 'status']
-     template_name = "goals/goal_form.html"
-     success_url = reverse_lazy("goat-list")
+    model = Goal
+    fields = ['title', 'description', 'deadline', 'status']
+    template_name = "goals/goal_form.html"
+    success_url = reverse_lazy("goat-list")
     
