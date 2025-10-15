@@ -1,0 +1,208 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% if object %}Editar Contribuição{% else %}Registrar Contribuição{% endif %} - GoalTracker</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-gradient-to-br from-slate-900 via-purple-900 to-slate-900 text-white min-h-screen">
+    
+    <!-- Navbar -->
+    <nav class="bg-black/20 backdrop-blur-lg border-b border-white/10">
+        <div class="container mx-auto px-6 py-4">
+            <div class="flex justify-between items-center">
+                <div class="flex items-center gap-8">
+                    <a href="{% url 'core:home' %}" class="text-2xl font-bold bg-gradient-to-r from-blue-400 to-purple-500 bg-clip-text text-transparent">
+                        🎯 GoalTracker
+                    </a>
+                    <div class="hidden md:flex gap-6">
+                        <a href="{% url 'core:dashboard' %}" class="hover:text-purple-400 transition">Dashboard</a>
+                        <a href="{% url 'team-list' %}" class="hover:text-purple-400 transition">Times</a>
+                        <a href="{% url 'goal-list' %}" class="text-purple-400 font-semibold">Metas</a>
+                    </div>
+                </div>
+                <div class="flex items-center gap-4">
+                    <div class="flex items-center gap-3">
+                        {% if user.photo %}
+                        <img src="{{ user.photo.url }}" alt="{{ user.username }}" class="w-10 h-10 rounded-full border-2 border-purple-500">
+                        {% else %}
+                        <div class="w-10 h-10 rounded-full bg-gradient-to-br from-blue-500 to-purple-600 flex items-center justify-center font-bold">
+                            {{ user.username|first|upper }}
+                        </div>
+                        {% endif %}
+                    </div>
+                    <a href="{% url 'logout' %}" class="px-4 py-2 bg-red-500/20 hover:bg-red-500/30 rounded-lg transition text-sm">
+                        Sair
+                    </a>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Main Content -->
+    <div class="container mx-auto px-6 py-8">
+        
+        <div class="max-w-3xl mx-auto">
+            
+            <!-- Header -->
+            <div class="mb-8">
+                <h1 class="text-4xl md:text-5xl font-bold mb-2">
+                    {% if object %}Editar Contribuição{% else %}Registrar Contribuição{% endif %}
+                </h1>
+                <p class="text-xl text-gray-400">
+                    {% if object %}Atualize o progresso da contribuição{% else %}Registre seu progresso na tarefa{% endif %}
+                </p>
+            </div>
+
+            <!-- Form Card -->
+            <div class="bg-white/5 backdrop-blur-sm rounded-2xl p-8 border border-white/10">
+                
+                <form method="post" class="space-y-6">
+                    {% csrf_token %}
+
+                    <!-- Display Form Errors -->
+                    {% if form.non_field_errors %}
+                    <div class="bg-red-500/20 border border-red-500/50 rounded-lg p-4">
+                        <div class="flex items-start gap-3">
+                            <svg class="w-5 h-5 text-red-400 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/>
+                            </svg>
+                            <div class="text-red-200">{{ form.non_field_errors }}</div>
+                        </div>
+                    </div>
+                    {% endif %}
+
+                    <!-- Info Card -->
+                    <div class="bg-blue-500/10 border border-blue-500/30 rounded-lg p-6">
+                        <div class="flex items-start gap-3">
+                            <svg class="w-5 h-5 text-blue-400 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/>
+                            </svg>
+                            <div class="text-sm text-blue-200">
+                                <strong class="font-semibold block mb-1">Você está registrando uma contribuição</strong>
+                                Isso será atribuído a você e ajudará a rastrear o progresso geral da meta e da subtarefa.
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Progresso -->
+                    <div>
+                        <label for="{{ form.progress.id_for_label }}" class="block text-sm font-semibold mb-4">
+                            Progresso (%) <span class="text-red-400">*</span>
+                        </label>
+                        <div class="space-y-4">
+                            <!-- Slider -->
+                            <div>
+                                <input 
+                                    type="range" 
+                                    name="{{ form.progress.name }}" 
+                                    id="{{ form.progress.id_for_label }}"
+                                    value="{{ form.progress.value|default:'0' }}"
+                                    min="0"
+                                    max="100"
+                                    step="5"
+                                    class="w-full h-3 bg-white/10 rounded-lg appearance-none cursor-pointer accent-purple-500"
+                                    oninput="document.getElementById('progress-value').textContent = this.value + '%'"
+                                >
+                            </div>
+
+                            <!-- Display Value -->
+                            <div class="flex items-center justify-between p-4 bg-white/5 rounded-lg border border-white/10">
+                                <span class="text-gray-400">Progresso selecionado:</span>
+                                <span class="text-3xl font-bold text-purple-400" id="progress-value">
+                                    {{ form.progress.value|default:'0' }}%
+                                </span>
+                            </div>
+
+                            <!-- Quick Select Buttons -->
+                            <div class="grid grid-cols-5 gap-2">
+                                <button type="button" class="px-3 py-2 bg-white/10 hover:bg-white/20 border border-white/10 rounded text-sm font-semibold transition" onclick="document.getElementById('{{ form.progress.id_for_label }}').value = 0; document.getElementById('progress-value').textContent = '0%'">
+                                    0%
+                                </button>
+                                <button type="button" class="px-3 py-2 bg-white/10 hover:bg-white/20 border border-white/10 rounded text-sm font-semibold transition" onclick="document.getElementById('{{ form.progress.id_for_label }}').value = 25; document.getElementById('progress-value').textContent = '25%'">
+                                    25%
+                                </button>
+                                <button type="button" class="px-3 py-2 bg-white/10 hover:bg-white/20 border border-white/10 rounded text-sm font-semibold transition" onclick="document.getElementById('{{ form.progress.id_for_label }}').value = 50; document.getElementById('progress-value').textContent = '50%'">
+                                    50%
+                                </button>
+                                <button type="button" class="px-3 py-2 bg-white/10 hover:bg-white/20 border border-white/10 rounded text-sm font-semibold transition" onclick="document.getElementById('{{ form.progress.id_for_label }}').value = 75; document.getElementById('progress-value').textContent = '75%'">
+                                    75%
+                                </button>
+                                <button type="button" class="px-3 py-2 bg-gradient-to-r from-green-600 to-emerald-600 hover:from-green-700 hover:to-emerald-700 rounded text-sm font-semibold transition" onclick="document.getElementById('{{ form.progress.id_for_label }}').value = 100; document.getElementById('progress-value').textContent = '100%'">
+                                    100%
+                                </button>
+                            </div>
+                        </div>
+
+                        {% if form.progress.errors %}
+                        <p class="mt-3 text-sm text-red-400">{{ form.progress.errors.0 }}</p>
+                        {% endif %}
+                        <p class="mt-3 text-sm text-gray-400">Indique qual é o percentual de progresso da tarefa</p>
+                    </div>
+
+                    <!-- Progress Info -->
+                    <div class="space-y-3">
+                        <div class="p-4 bg-white/5 rounded-lg border border-white/10">
+                            <div class="text-sm text-gray-400 mb-2">Progresso Visual</div>
+                            <div class="w-full bg-white/10 rounded-full h-3 overflow-hidden">
+                                <div 
+                                    class="h-full rounded-full transition-all duration-300 bg-gradient-to-r from-blue-500 to-purple-600"
+                                    id="progress-bar"
+                                    style="width: {{ form.progress.value|default:'0' }}%"
+                                ></div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Status Info -->
+                    <div class="bg-yellow-500/10 border border-yellow-500/30 rounded-lg p-4">
+                        <div class="flex items-start gap-3">
+                            <svg class="w-5 h-5 text-yellow-400 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4v2m0 4v2M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/>
+                            </svg>
+                            <div class="text-sm text-yellow-200">
+                                <strong class="font-semibold block mb-1">Importante:</strong>
+                                Quando atingir 100%, a subtarefa será marcada como concluída. Se todas as subtarefas forem concluídas, a meta será finalizada automaticamente.
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Action Buttons -->
+                    <div class="flex flex-col sm:flex-row gap-4 pt-4">
+                        <button 
+                            type="submit"
+                            class="flex-1 px-6 py-3 bg-gradient-to-r from-green-600 to-emerald-600 hover:from-green-700 hover:to-emerald-700 rounded-lg font-semibold transition-all duration-300 hover:scale-105 shadow-lg flex items-center justify-center gap-2"
+                        >
+                            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/>
+                            </svg>
+                            {% if object %}Atualizar Contribuição{% else %}Registrar Contribuição{% endif %}
+                        </button>
+                        
+                        <a 
+                            href="javascript:history.back()"
+                            class="flex-1 px-6 py-3 bg-white/5 hover:bg-white/10 border border-white/10 rounded-lg font-semibold transition text-center"
+                        >
+                            Cancelar
+                        </a>
+                    </div>
+
+                </form>
+
+            </div>
+
+        </div>
+
+    </div>
+
+    <script>
+        // Atualizar a barra de progresso quando o slider mudar
+        document.getElementById('{{ form.progress.id_for_label }}').addEventListener('input', function() {
+            document.getElementById('progress-bar').style.width = this.value + '%';
+        });
+    </script>
+
+</body>
+</html>
