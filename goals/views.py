@@ -15,7 +15,7 @@ class GoalCreateView(CreateView, LoginRequiredMixin):
 
         if team_id:
             try:
-                team = Team.Objects.get(pk=team_id)
+                team = Team.objects.get(pk=team_id)
                 if self.request.user in team.members.all() or self.request.user == team.owner:
                     context['team'] = team
                     context['selected_team_id'] = team_id
