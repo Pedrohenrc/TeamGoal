@@ -1,22 +1,27 @@
 from django.views.generic import TemplateView
-from django.shortcuts import redirect
 from django.contrib.auth.mixins import LoginRequiredMixin
+from django.dispatch import receiver
+from allauth.socialaccount.signals import pre_social_login
+from django.contrib.auth import get_user_model
+
+User = get_user_model()
 
 class HomeView(TemplateView):
     """Landing page inicial"""
     template_name = 'home.html'
 
-# Views temporárias de login
-class GoogleLoginView(TemplateView):
-    def get(self, request):
-        # TODO: Implementar OAuth do Google
-        return redirect('core:home')
-
-class GitHubLoginView(TemplateView):
-    def get(self, request):
-        # TODO: Implementar OAuth do GitHub
-        return redirect('core:home')
+@receiver(pre_social_login)
+def link_to_existing_user(sender, request, sociallogin, **kwargs):
+    if sociallogin.is_existing:
+        return
     
+    email = sociallogin.account.extra_data.get('email', '')
+    
+    try:
+        user = User.objects.get(email=email)
+        sociallogin.connect(request, user)
+    except User.DoesNotExist:
+        pass
 class DashboardView(LoginRequiredMixin, TemplateView):
     template_name = 'dashboard.html'
     login_url = 'core:home'  # Redireciona para home se não logado

@@ -24,5 +24,4 @@ urlpatterns = [
     path('team/', include("teams.urls")),
     path('goals/', include("goals.urls")),
     path('accounts/', include('allauth.urls')),
-    path('logout/', LogoutView.as_view(next_page='/'), name='logout'),
 ]

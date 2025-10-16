@@ -25,15 +25,15 @@
                 </div>
                 <div class="flex items-center gap-4">
                     <div class="flex items-center gap-3">
-                        {% if user.photo %}
-                        <img src="{{ user.photo.url }}" alt="{{ user.username }}" class="w-10 h-10 rounded-full border-2 border-purple-500">
+                        {% if user.get_photo %}
+                            <img src="{{ user.get_photo }}" alt="{{ user.username }}" class="w-10 h-10 rounded-full border-2 border-purple-500">
                         {% else %}
-                        <div class="w-10 h-10 rounded-full bg-gradient-to-br from-blue-500 to-purple-600 flex items-center justify-center font-bold">
-                            {{ user.username|first|upper }}
-                        </div>
+                            <div class="w-10 h-10 rounded-full bg-gradient-to-br from-blue-500 to-purple-600 flex items-center justify-center font-bold">
+                                {{ user.username|first|upper }}
+                            </div>
                         {% endif %}
                     </div>
-                    <a href="{% url 'logout' %}" class="px-4 py-2 bg-red-500/20 hover:bg-red-500/30 rounded-lg transition text-sm">
+                    <a href="{% url 'account_logout' %}" class="px-4 py-2 bg-red-500/20 hover:bg-red-500/30 rounded-lg transition text-sm">
                         Sair
                     </a>
                 </div>
