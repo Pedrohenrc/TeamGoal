@@ -150,31 +150,52 @@
 
                     <!-- Action Buttons -->
                     <div class="flex flex-col sm:flex-row gap-4 pt-4">
-                        <!-- Team Info (Hidden) -->
-                        {% if team %}
-                        <div class="bg-blue-500/10 border border-blue-500/30 rounded-lg p-4">
-                            <div class="flex items-start gap-3">
-                                <svg class="w-5 h-5 text-blue-400 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/>
-                                </svg>
-                                <div class="text-sm text-blue-200">
-                                    <strong class="font-semibold">Esta meta será criada para o time:</strong><br>
-                                    <span class="text-lg font-bold text-blue-300">{{ team.name }}</span>
-                                </div>
+                        <!-- Team Selection / Info -->
+                    {% if team %}
+                    <!-- Quando vem de um time específico -->
+                    <div class="bg-blue-500/10 border border-blue-500/30 rounded-lg p-4">
+                        <div class="flex items-start gap-3">
+                            <svg class="w-5 h-5 text-blue-400 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/>
+                            </svg>
+                            <div class="text-sm text-blue-200">
+                                <strong class="font-semibold">Esta meta será criada para o time:</strong><br>
+                                <span class="text-lg font-bold text-blue-300">{{ team.name }}</span>
                             </div>
                         </div>
-                        {% else %}
-                        <div class="bg-red-500/10 border border-red-500/30 rounded-lg p-4">
-                            <div class="flex items-start gap-3">
-                                <svg class="w-5 h-5 text-red-400 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/>
-                                </svg>
-                                <div class="text-sm text-red-200">
-                                    <strong class="font-semibold">Erro:</strong> Nenhum time foi selecionado. Crie a meta a partir da página do time.
-                                </div>
+                    </div>
+                    {% elif user_teams %}
+                    <!-- Quando vem da página de metas, mostra seleção -->
+                    <div>
+                        <label for="id_team" class="block text-sm font-semibold mb-2">
+                            Selecione um Time <span class="text-red-400">*</span>
+                        </label>
+                        <select 
+                            name="team" 
+                            id="id_team"
+                            class="w-full px-4 py-3 bg-slate-800 border border-white/20 rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-500 text-white"
+                            required
+                        >
+                            <option value="">-- Escolha um time --</option>
+                            {% for t in user_teams %}
+                            <option value="{{ t.id }}">{{ t.name }}</option>
+                            {% endfor %}
+                        </select>
+                        <p class="mt-2 text-sm text-gray-400">Escolha para qual time esta meta será criada</p>
+                    </div>
+                    {% else %}
+                    <!-- Se não tiver times -->
+                    <div class="bg-red-500/10 border border-red-500/30 rounded-lg p-4">
+                        <div class="flex items-start gap-3">
+                            <svg class="w-5 h-5 text-red-400 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/>
+                            </svg>
+                            <div class="text-sm text-red-200">
+                                <strong class="font-semibold">Erro:</strong> Você não participa de nenhum time. <a href="{% url 'team-create' %}" class="underline hover:text-red-100">Crie um time</a> primeiro.
                             </div>
                         </div>
-                        {% endif %}
+                    </div>
+                    {% endif %}
                         <button 
                             type="submit"
                             class="flex-1 px-6 py-3 bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-700 hover:to-pink-700 rounded-lg font-semibold transition-all duration-300 hover:scale-105 shadow-lg flex items-center justify-center gap-2"

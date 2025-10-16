@@ -23,6 +23,8 @@ class GoalCreateView(CreateView, LoginRequiredMixin):
                     context['selected_team_id'] = team_id
             except Team.DoesNotExist:
                 pass
+        else:
+            context['user_teams'] = self.request.user.teams.all()
 
         return context
     def form_valid(self, form):
@@ -38,8 +40,18 @@ class GoalCreateView(CreateView, LoginRequiredMixin):
             except Team.DoesNotExist:
                 return self.form_invalid
         else:
-            return self.form_invalid(form)
-        
+            team_id_from_post = self.request.POST.get('team')
+            if team_id_from_post:
+                try:
+                    team = Team.objects.get(pk=team_id_from_post)
+                    if self.request.user in team.members.all() or self.request.user == team.owner:
+                        form.instance.team = team
+                    else:
+                        return self.form_invalid(form)
+                except Team.DoesNotExist:
+                    return self.form_invalid(form)
+            else:
+                return self.form_invalid(form)
         return super().form_valid(form)
         
     def get_success_url(self):
