@@ -2,7 +2,7 @@ from django import forms
 from .models import Contribution
 
 class ContributionForm(forms.ModelForm):
-    class meta:
+    class Meta:
         model = Contribution
         fields = ['progress']
 

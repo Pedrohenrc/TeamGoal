@@ -97,6 +97,18 @@ class GoalDetailView (DetailView, LoginRequiredMixin):
     context_object_name = "goal"
     template_name = "goals/goal_detail.html"
 
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        goal = self.object
+
+        subtasks = goal.subtasks.all()
+        completed_count = subtasks.filter(is_completed=True).count()
+        total_count = subtasks.count()
+
+        context['subtasks_completed'] = completed_count
+        context['subtasks_total'] = total_count
+
+        return context
 class GoalUpdateView (UpdateView, LoginRequiredMixin):
     model = Goal
     fields = ['title', 'description', 'deadline', 'status']

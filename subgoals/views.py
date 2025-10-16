@@ -1,4 +1,5 @@
-from django.urls import reverse_lazy
+from django.shortcuts import get_object_or_404
+from django.urls import reverse, reverse_lazy
 from django.views.generic import ListView, DetailView, CreateView, UpdateView, DeleteView
 from django.contrib.auth.mixins import LoginRequiredMixin
 from .models import SubGoal
@@ -11,13 +12,12 @@ class SubgoalCreateView(LoginRequiredMixin, CreateView):
     template_name = "subgoals/subgoal_form.html"
 
     def form_valid(self, form):
-        goal_id = self.kwargs.get("pk")
-        form.instance.goal = Goal.objects.get(pk=goal_id)
-        return super().form_valid(form)
-
+        goal_id = self.kwargs.get("goal_id")
+        form.instance.goal = get_object_or_404(Goal, id=goal_id)
+        response = super().form_valid(form)
+        return response
     def get_success_url(self):
-         return reverse_lazy('goal-detail', kwargs={"pk": self.kwargs.get("pk")})
-    
+         return reverse('goal-detail', kwargs={"pk": self.object.goal.id})
 class SubgoalDetailView(LoginRequiredMixin, DetailView):
     model = SubGoal
     context_object_name = "subgoal"

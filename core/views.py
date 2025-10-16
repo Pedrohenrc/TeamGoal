@@ -3,6 +3,7 @@ from django.contrib.auth.mixins import LoginRequiredMixin
 from django.dispatch import receiver
 from allauth.socialaccount.signals import pre_social_login
 from django.contrib.auth import get_user_model
+from goals.models import Goal
 
 User = get_user_model()
 
@@ -33,3 +34,15 @@ class DashboardView(LoginRequiredMixin, TemplateView):
             return redirect('core:home')
         return super().dispatch(request, *args, **kwargs)
     
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+
+        user_teams = self.request.user.teams.all()
+        total_goals = 0
+        for team in user_teams:
+            total_goals += team.goals.count()
+
+        context['user_teams'] = user_teams
+        context['total_goals'] = total_goals
+
+        return context
