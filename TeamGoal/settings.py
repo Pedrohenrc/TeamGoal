@@ -32,6 +32,9 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'django.contrib.sites',
     # libs externas
+    'rest_framework',
+    'rest_framework.authtoken',
+    'dj_rest_auth',
     "allauth",
     "allauth.account",
     "allauth.socialaccount",
@@ -149,3 +152,11 @@ SOCIALACCOUNT_PROVIDERS = {
 }
 
 ACCOUNT_LOGOUT_ON_GET = False
+
+REST_FRAMEWORK = {
+    # Use Django's standard `django.contrib.auth` permissions,
+    # or allow read-only access for unauthenticated users.
+    'DEFAULT_PERMISSION_CLASSES': [
+        'rest_framework.permissions.DjangoModelPermissionsOrAnonReadOnly'
+    ]
+}

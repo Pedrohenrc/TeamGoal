@@ -23,4 +23,5 @@ urlpatterns = [
     path('team/', include("teams.urls")),
     path('goals/', include("goals.urls")),
     path('accounts/', include('allauth.urls')),
+    path('api-auth/', include('rest_framework.urls'))
 ]
