@@ -3,8 +3,8 @@ from .models import Contribution
 from users.models import CustomUser
 
 class ContributionSerializer(serializers.ModelSerializer):
-    subgoal_title = serializers.CharField(source='subtask.title', read_only=True)
-    goal_title = serializers.CharField(source='goal.title', read_only=True)
+    subgoal_title = serializers.CharField(source='subtask.title', read_only=True, allow_null=True)
+    goal_title = serializers.CharField(source='goal.title', read_only=True, allow_null=True)
     user_username = serializers.CharField(source='user.username', read_only=True)
 
     class Meta:

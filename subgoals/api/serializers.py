@@ -1,10 +1,9 @@
 from rest_framework import serializers
 from .models import SubGoal
-from users.models import CustomUser
 
 class SubGoalSerializer(serializers.ModelSerializer):
     goal_title = serializers.CharField(source='goal.title', read_only=True)
-    assigned_to_username = serializers.CharField(source='assigned_to.username', read_only=True)
+    assigned_to_username = serializers.CharField(source='assigned_to.username', read_only=True, allow_null=True)
     contributions_count = serializers.SerializerMethodField()
 
     class Meta:

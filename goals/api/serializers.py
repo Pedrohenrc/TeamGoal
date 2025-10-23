@@ -1,6 +1,5 @@
 from rest_framework import serializers
 from .models import Goal
-from users.models import CustomUser
 
 class GoalSerializer(serializers.ModelSerializer):
     team_name = serializers.CharField(source="team.name", read_only=True)
