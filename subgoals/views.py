@@ -29,16 +29,32 @@ class SubgoalDetailView(LoginRequiredMixin, DetailView):
 
         return context
     
+    
+        
+    
 class SubgoalUpdateView(LoginRequiredMixin, UpdateView):
     model = SubGoal
     fields = ['title', 'description', 'assigned_to', 'is_completed']
-    template_name = "subgoals/subgoal_list.html"
+    template_name = "goals/goal_detail.html"
+    pk_url_kwarg = "subgoal_id"
 
     def form_valid(self, form):
+        if form.cleaned_data.get('is_completed') and not self.object.is_completed:
+            self.object.fechar_subtask(user=self.request.user)
+            return super().form_valid(form)
+        
         response = super().form_valid(form)
         self.object.goal.update_progress()
         return response
     
+    def get_success_url(self):
+        return reverse_lazy('goal-detail', kwargs={'pk': self.object.goal.id})
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['goal'] = self.object.goal 
+        return context
+
 class SubgoalListView(LoginRequiredMixin, ListView):
     model = SubGoal
     context_object_name = "subgoals"
@@ -51,6 +67,8 @@ class SubgoalListView(LoginRequiredMixin, ListView):
         if user:
             queryset = queryset.filter(assigned_to__id=user)
         return queryset
+    
+
 
 class SubgoalDeleteView(DeleteView):
     model = SubGoal
@@ -63,6 +81,6 @@ class SubgoalDeleteView(DeleteView):
         return response
 
     def get_success_url(self):
-        return reverse_lazy('goal-detail', kwargs={'pk': self.object.goal.id})
+        return reverse_lazy('goal-detail', kwargs={'pk': self.object.goal.id}) 
     
 

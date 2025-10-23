@@ -14,5 +14,11 @@ class Contribution(models.Model):
             self.goal = self.subtask.goal
         super().save(*args, **kwargs)
 
+        super().save(*args, **kwargs)
+
+        if self.goal:
+            self.goal.update_progress()
+
+
     def __str__(self):
         return f"{self.user} - {self.subtask} ({self.progress}%)"

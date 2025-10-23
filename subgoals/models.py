@@ -18,11 +18,21 @@ class SubGoal(models.Model):
     updated_at = models.DateTimeField(auto_now=True)
 
     def fechar_subtask(self):
-        self.is_completed = True
-        self.save()
-        if hasattr(self.goal, "update_progress"):
-            self.goal.update_progress()
-
+        if not self.is_completed:
+            self.is_completed = True
+            self.save()
+            
+            if user or self.assigned_to:
+                from contributions.models import Contribution
+                Contribution.objects.create(
+                    subtask=self,
+                    goal=self.goal,
+                    user=user or self.assigned_to,
+                    progress=100
+                )
+            
+            if hasattr(self.goal, "update_progress"):
+                self.goal.update_progress()
     def __str__(self):
         return f"{self.title} ({'Done' if self.is_completed else 'Pending'})"
     
