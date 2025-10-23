@@ -17,7 +17,6 @@ class TeamSerializer(serializers.ModelSerializer):
             'owner_username',
             'members',
             'members_usernames'
-            'goals',
             'goals_count',
             'created_at',
         ]
