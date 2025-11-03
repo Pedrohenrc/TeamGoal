@@ -16,9 +16,21 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.urls import path, include
+from rest_framework.routers import DefaultRouter
+from teams.views import TeamViewSet
+from goals.views import GoalViewSet
+from subgoals.views import SubGoalViewSet
+from contributions.views import ContributionViewSet
+
+router = DefaultRouter()
+router.register(r'teams', TeamViewSet, basename='team')
+router.register(r'goals', GoalViewSet, basename='goal')
+router.register(r'subgoals', SubGoalViewSet, basename='subgoal')
+router.register(r'contributions', ContributionViewSet, basename='contribution')
 
 urlpatterns = [
     path('admin/', admin.site.urls),
+    path('api/', include(router.urls)),
     path('', include("core.urls")),
     path('team/', include("teams.urls")),
     path('goals/', include("goals.urls")),

@@ -34,6 +34,7 @@ INSTALLED_APPS = [
     # libs externas
     'rest_framework',
     'rest_framework.authtoken',
+    'rest_framework_simplejwt',
     'dj_rest_auth',
     "allauth",
     "allauth.account",
