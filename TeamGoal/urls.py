@@ -23,10 +23,10 @@ from subgoals.api.views import SubGoalViewSet
 from contributions.api.views import ContributionViewSet
 
 router = DefaultRouter()
-router.register(r'teams', TeamViewSet, basename='team')
-router.register(r'goals', GoalViewSet, basename='goal')
-router.register(r'subgoals', SubGoalViewSet, basename='subgoal')
-router.register(r'contributions', ContributionViewSet, basename='contribution')
+router.register(r'teams', TeamViewSet, basename='api-team')
+router.register(r'goals', GoalViewSet, basename='api-goal')
+router.register(r'subgoals', SubGoalViewSet, basename='api-subgoal')
+router.register(r'contributions', ContributionViewSet, basename='api-contribution')
 
 urlpatterns = [
     path('admin/', admin.site.urls),

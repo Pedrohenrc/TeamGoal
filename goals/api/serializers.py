@@ -23,9 +23,9 @@ class GoalSerializer(serializers.ModelSerializer):
         ]
         read_only_fields = ['id', 'created_at', 'updated_at', 'team_name', 'subtasks_count', 'contributions_count']
 
-        def get_subtasks_count(self, obj):
+    def get_subtasks_count(self, obj):
             return obj.subtasks.count()
         
-        def get_contributions_count(self, obj):
+    def get_contributions_count(self, obj):
             return obj.contributions.count()
         
