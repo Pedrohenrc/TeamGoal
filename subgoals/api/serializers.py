@@ -1,5 +1,5 @@
 from rest_framework import serializers
-from .models import SubGoal
+from subgoals.models import SubGoal
 
 class SubGoalSerializer(serializers.ModelSerializer):
     goal_title = serializers.CharField(source='goal.title', read_only=True)

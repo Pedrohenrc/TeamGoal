@@ -17,10 +17,10 @@ Including another URLconf
 from django.contrib import admin
 from django.urls import path, include
 from rest_framework.routers import DefaultRouter
-from teams.views import TeamViewSet
-from goals.views import GoalViewSet
-from subgoals.views import SubGoalViewSet
-from contributions.views import ContributionViewSet
+from teams.api.views import TeamViewSet
+from goals.api.views import GoalViewSet
+from subgoals.api.views import SubGoalViewSet
+from contributions.api.views import ContributionViewSet
 
 router = DefaultRouter()
 router.register(r'teams', TeamViewSet, basename='team')
@@ -30,7 +30,10 @@ router.register(r'contributions', ContributionViewSet, basename='contribution')
 
 urlpatterns = [
     path('admin/', admin.site.urls),
-    path('api/', include(router.urls)),
+    path('api/', include([
+        path('', include(router.urls)),
+        path('auth/', include('dj_rest_auth.urls')),
+    ])),
     path('', include("core.urls")),
     path('team/', include("teams.urls")),
     path('goals/', include("goals.urls")),

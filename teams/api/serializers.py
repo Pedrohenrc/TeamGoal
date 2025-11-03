@@ -1,5 +1,5 @@
 from rest_framework import serializers
-from .models import Team
+from teams.models import Team
 from users.models import CustomUser
 
 class TeamSerializer(serializers.ModelSerializer):

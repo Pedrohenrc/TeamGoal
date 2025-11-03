@@ -5,7 +5,7 @@ from rest_framework.response import Response
 from rest_framework.permissions import IsAuthenticated
 from django.db.models import Q
 from django.shortcuts import get_object_or_404
-from .models import SubGoal
+from subgoals.models import SubGoal
 from .serializers import SubGoalSerializer
 from goals.models import Goal
 
