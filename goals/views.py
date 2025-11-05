@@ -84,6 +84,11 @@ class GoalListView(ListView, LoginRequiredMixin):
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         queryset = self.get_queryset()
+
+        for goal in queryset:
+            completed = goal.subtasks.filter(is_completed=True).count()
+            total = goal.subtasks.count()
+            goal.progress_display = f"{completed} de {total}"
             
          
         context['pending_count'] = queryset.filter(status='pending').count()
