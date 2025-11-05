@@ -46,7 +46,6 @@ INSTALLED_APPS = [
     "teams",
     "goals",
     "contributions",
-    "certificates",
     "subgoals",
     "core",
 ]
