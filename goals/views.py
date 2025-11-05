@@ -89,6 +89,9 @@ class GoalListView(ListView, LoginRequiredMixin):
             completed = goal.subtasks.filter(is_completed=True).count()
             total = goal.subtasks.count()
             goal.progress_display = f"{completed} de {total}"
+            goal.completed_count = completed
+            goal.total_count = total
+            
             
          
         context['pending_count'] = queryset.filter(status='pending').count()

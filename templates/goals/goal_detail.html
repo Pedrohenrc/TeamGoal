@@ -115,6 +115,7 @@
                         {% widthratio subtasks_completed subtasks_total 100 as progress_percent %}
                     {% else %}
                         {% with progress_percent=0 %}
+                        {% endwith %}
                     {% endif %}
                     <div 
                         class="h-full rounded-full transition-all duration-500 {% if subtasks_completed == subtasks_total and subtasks_total > 0 %}bg-gradient-to-r from-green-500 to-emerald-600{% elif progress_percent >= 50 %}bg-gradient-to-r from-blue-500 to-purple-600{% else %}bg-gradient-to-r from-orange-500 to-red-600{% endif %}"
