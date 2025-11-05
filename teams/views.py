@@ -1,5 +1,5 @@
 from django.urls import reverse_lazy
-from django.views.generic import ListView, DetailView, CreateView, UpdateView
+from django.views.generic import ListView, DetailView, CreateView, UpdateView, DeleteView
 from django.contrib.auth.mixins import LoginRequiredMixin
 from .models import Team
 from .forms import TeamForm
@@ -18,6 +18,20 @@ class TeamDetailView(LoginRequiredMixin, DetailView):
     template_name = "teams/team_detail.html"
     context_object_name = "team"
 
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        team = self.object
+        
+        for goal in team.goals.all():
+            completed = goal.subtasks.filter(is_completed=True).count()
+            total = goal.subtasks.count()
+            goal.progress_display = f"{completed} de {total}"
+            goal.completed_count = completed
+            goal.total_count = total
+        
+        return context
+
 class TeamCreateView(LoginRequiredMixin, CreateView):
     model = Team
     form_class = TeamForm
@@ -34,4 +48,8 @@ class TeamUpdateView(LoginRequiredMixin, UpdateView):
     model = Team
     form_class = TeamForm
     template_name = "teams/team_form.html"
+    success_url = reverse_lazy("team-list")
+
+class TeamDeleteView(DeleteView, LoginRequiredMixin):
+    model = Team
     success_url = reverse_lazy("team-list")
