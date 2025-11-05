@@ -1,0 +1,64 @@
+# ---- DJANGO / PYTHON ----
+__pycache__/
+*.py[cod]
+*.log
+*.pot
+*.pyc
+*.pyo
+*.pyd
+
+# ---- DATABASES ----
+db.sqlite3
+*.db
+
+# ---- DJANGO STATIC & MEDIA ----
+staticfiles/
+static/
+media/
+
+# ---- ENVIRONMENT VARIABLES ----
+.env
+.env.local
+.env.*.local
+
+# ---- VIRTUAL ENVIRONMENT ----
+venv/
+env/
+.venv/
+
+# ---- IDE / EDITOR ----
+.vscode/
+.idea/
+*.sublime-project
+*.sublime-workspace
+
+# ---- TESTS & COVERAGE ----
+.coverage
+htmlcov/
+.tox/
+.pytest_cache/
+nosetests.xml
+coverage.xml
+*.cover
+*.py,cover
+.hypothesis/
+
+# ---- SYSTEM FILES ----
+.DS_Store
+Thumbs.db
+
+# ---- MIGRATIONS CACHE ----
+**/migrations/__pycache__/
+**/migrations/*.pyc
+# (opcional) se quiser ignorar TODAS as migrações locais, descomente abaixo:
+# **/migrations/
+
+# ---- COMPILED / BUILD ----
+build/
+dist/
+*.egg-info/
+.eggs/
+
+# ---- QODO / CUSTOM CACHES ----
+.qodo/
+

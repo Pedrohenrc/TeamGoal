@@ -166,6 +166,59 @@
             <!-- Left Column - Members -->
             <div class="lg:col-span-1">
                 <div class="bg-white/5 backdrop-blur-sm rounded-2xl p-6 border border-white/10">
+                                    <!-- Se é owner, mostra código e pedidos -->
+                {% if team.owner == user %}
+                <div class="bg-white/5 backdrop-blur-sm rounded-2xl p-6 border border-white/10 mt-8">
+                    <h3 class="text-xl font-bold mb-4">Gerenciar Time</h3>
+                    
+                    <!-- Código do Time -->
+                    <div class="mb-6 p-4 bg-blue-500/10 rounded-lg border border-blue-500/20">
+                        <div class="text-sm text-gray-400 mb-1">Código para novos membros</div>
+                        <div class="flex items-center gap-2">
+                            <code class="text-2xl font-mono font-bold text-blue-400">{{ team.code }}</code>
+                            <button onclick="navigator.clipboard.writeText('{{ team.code }}')" class="px-3 py-1 bg-blue-600 hover:bg-blue-700 rounded text-sm">
+                                Copiar
+                            </button>
+                        </div>
+                    </div>
+                    
+                    <!-- Pedidos Pendentes -->
+                    {% if team.join_requests.all %}
+                    <div>
+                        <h4 class="font-semibold mb-4">Pedidos de Acesso</h4>
+                        <div class="space-y-3">
+                            {% for req in team.join_requests.all %}
+                                {% if req.status == 'pending' %}
+                                <div class="flex items-center justify-between p-3 bg-white/5 rounded-lg border border-white/10">
+                                    <div class="flex items-center gap-3">
+                                        {% if req.user.photo %}
+                                        <img src="{{ req.user.photo.url }}" alt="{{ req.user.username }}" class="w-10 h-10 rounded-full">
+                                        {% else %}
+                                        <div class="w-10 h-10 rounded-full bg-gradient-to-br from-blue-500 to-purple-600 flex items-center justify-center font-bold">
+                                            {{ req.user.username|first|upper }}
+                                        </div>
+                                        {% endif %}
+                                        <div>
+                                            <div class="font-semibold">{{ req.user.username }}</div>
+                                            <div class="text-xs text-gray-400">Solicitou em {{ req.created_at|date:"d/m/Y H:i" }}</div>
+                                        </div>
+                                    </div>
+                                    <div class="flex gap-2">
+                                        <a href="{% url 'accept-join-request' req.id %}" class="px-3 py-1 bg-green-600 hover:bg-green-700 rounded text-sm font-semibold">
+                                            ✓ Aceitar
+                                        </a>
+                                        <a href="{% url 'reject-join-request' req.id %}" class="px-3 py-1 bg-red-600 hover:bg-red-700 rounded text-sm font-semibold">
+                                            ✕ Recusar
+                                        </a>
+                                    </div>
+                                </div>
+                                {% endif %}
+                            {% endfor %}
+                        </div>
+                    </div>
+                    {% endif %}
+                </div>
+                {% endif %}
                     <div class="flex items-center justify-between mb-6">
                         <h2 class="text-2xl font-bold">Membros</h2>
                         <span class="px-3 py-1 bg-purple-500/20 text-purple-300 rounded-full text-sm font-semibold">

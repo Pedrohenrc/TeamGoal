@@ -1,7 +1,9 @@
 from django.urls import reverse_lazy
 from django.views.generic import ListView, DetailView, CreateView, UpdateView, DeleteView
 from django.contrib.auth.mixins import LoginRequiredMixin
-from .models import Team
+from .models import Team, TeamJoinRequest
+from django.http import JsonResponse
+from django.shortcuts import get_object_or_404, redirect, render
 from .forms import TeamForm
 # Create your views here.
 
@@ -53,3 +55,55 @@ class TeamUpdateView(LoginRequiredMixin, UpdateView):
 class TeamDeleteView(DeleteView, LoginRequiredMixin):
     model = Team
     success_url = reverse_lazy("team-list")
+
+class TeamJoinByCodeView(LoginRequiredMixin, CreateView):
+    model = TeamJoinRequest
+    fields = []
+    template_name = "teams/team_join_code.html"
+
+    def post(self, request, *args, **kwargs):
+        code = request.POST.get('code', '').upper()
+        
+        try:
+            team = Team.objects.get(code=code)
+        except Team.DoesNotExist:
+            return redirect('team-join-code')
+        
+        if request.user in team.members.all():
+            return redirect('team-detail', pk=team.pk)
+        
+        existing = TeamJoinRequest.objects.filter(team=team, user=request.user).first()
+        if existing:
+            if existing.status == 'pending':
+                return render(request, self.template_name, {'error': 'Você já solicitou acesso'})
+            else:
+                existing.delete()
+        
+        TeamJoinRequest.objects.create(team=team, user=request.user)
+        return render(request, self.template_name, {'success': 'Pedido enviado com sucesso!'})
+
+        
+def accept_join_request(request, request_id):
+        join_req = get_object_or_404(TeamJoinRequest, id=request_id)
+        team = join_req.team
+        
+        if request.user != team.owner:
+            return redirect('team-list')
+        
+        join_req.status = 'accepted'
+        join_req.save()
+        team.members.add(join_req.user)
+        
+        return redirect('team-detail', pk=team.pk)
+
+def reject_join_request(request, request_id):
+        join_req = get_object_or_404(TeamJoinRequest, id=request_id)
+        team = join_req.team
+        
+        if request.user != team.owner:
+            return redirect('team-list')
+        
+        join_req.status = 'rejected'
+        join_req.save()
+        
+        return redirect('team-detail', pk=team.pk)
