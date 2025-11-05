@@ -7,31 +7,6 @@ from goals.models import Goal
 from subgoals.models import SubGoal
 # Create your views here.
 
-class ContributionCreateView(CreateView):
-    model = Contribution
-    form_class = ContributionForm
-    template_name = "contributions/contribution_form.html"
-
-    def form_valid(self, form):
-        form.instance.user = self.request.user
-        subtask_id = self.kwargs.get("subgoal_id")
-        goal_id = self.kwargs.get("goal_id")
-
-        if subtask_id:
-            form.instance.subtask = SubGoal.objects.get(pk=subtask_id)
-            form.instance.goal = form.instance.subtask.goal
-        elif goal_id:
-            form.instance.goal = Goal.objects.get(pk=goal_id)
-        else:
-            # erro: precisa de subtask ou goal
-            return self.form_invalid(form)
-
-        return super().form_valid(form)
-
-    def get_success_url(self):
-        # depois de salvar, volta para a página da goal
-        return reverse_lazy("goal-detail", kwargs={"pk": self.object.goal.pk})
-
 class ContributionListView(ListView, LoginRequiredMixin):
     model = Contribution
     context_object_name = 'contributions'
