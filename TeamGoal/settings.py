@@ -34,6 +34,7 @@ INSTALLED_APPS = [
     # libs externas
     'rest_framework',
     'rest_framework.authtoken',
+    'rest_framework_simplejwt',
     'dj_rest_auth',
     "allauth",
     "allauth.account",
@@ -45,7 +46,6 @@ INSTALLED_APPS = [
     "teams",
     "goals",
     "contributions",
-    "certificates",
     "subgoals",
     "core",
 ]
@@ -154,8 +154,6 @@ SOCIALACCOUNT_PROVIDERS = {
 ACCOUNT_LOGOUT_ON_GET = False
 
 REST_FRAMEWORK = {
-    # Use Django's standard `django.contrib.auth` permissions,
-    # or allow read-only access for unauthenticated users.
     'DEFAULT_PERMISSION_CLASSES': [
         'rest_framework.permissions.IsAuthenticated',
     ],
@@ -164,6 +162,11 @@ REST_FRAMEWORK = {
     ],
     'DEFAULT_PAGINATION_CLASS': 'rest_framework.pagination.PageNumberPagination',
     'PAGE_SIZE': 20,
+}
+
+REST_AUTH = {
+    'USE_JWT': True,
+    'JWT_AUTH_COOKIE': None,
 }
 
 from datetime import timedelta

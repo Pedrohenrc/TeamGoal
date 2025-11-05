@@ -22,7 +22,7 @@ class SubGoal(models.Model):
             self.is_completed = True
             self.save()
             
-            if user or self.assigned_to:
+            if self.assigned_to:
                 from contributions.models import Contribution
                 Contribution.objects.create(
                     subtask=self,

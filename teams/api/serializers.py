@@ -1,5 +1,5 @@
 from rest_framework import serializers
-from .models import Team
+from teams.models import Team
 from users.models import CustomUser
 
 class TeamSerializer(serializers.ModelSerializer):
@@ -12,21 +12,21 @@ class TeamSerializer(serializers.ModelSerializer):
         model = Team
         fields = [
             'id',
+            'name',
             'description',
             'owner',
             'owner_username',
             'members',
-            'members_usernames'
-            'goals',
+            'members_username',
             'goals_count',
             'created_at',
         ]
         read_only_fields = ['id', 'created_at', 'owner_username', 'members_username', 'goals_count']
 
-        def get_goals_count(self, obj):
+    def get_goals_count(self, obj):
             return obj.goals.count()
         
-        def members_username(self, obj):
+    def get_members_username(self, obj):
             return [member.username for member in obj.members.all()]
         
 
