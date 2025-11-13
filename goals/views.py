@@ -1,5 +1,5 @@
 from django.urls import reverse_lazy
-from django.views.generic import ListView, DetailView, CreateView, UpdateView
+from django.views.generic import ListView, DetailView, CreateView, UpdateView, DeleteView
 from django.contrib.auth.mixins import LoginRequiredMixin
 from .models import Goal
 from teams.models import Team
@@ -84,6 +84,14 @@ class GoalListView(ListView, LoginRequiredMixin):
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         queryset = self.get_queryset()
+
+        for goal in queryset:
+            completed = goal.subtasks.filter(is_completed=True).count()
+            total = goal.subtasks.count()
+            goal.progress_display = f"{completed} de {total}"
+            goal.completed_count = completed
+            goal.total_count = total
+
             
          
         context['pending_count'] = queryset.filter(status='pending').count()
@@ -113,5 +121,9 @@ class GoalUpdateView (UpdateView, LoginRequiredMixin):
     model = Goal
     fields = ['title', 'description', 'deadline', 'status']
     template_name = "goals/goal_form.html"
+    success_url = reverse_lazy("goal-list")
+
+class GoalDeleteView(DeleteView, LoginRequiredMixin):
+    model = Goal
     success_url = reverse_lazy("goal-list")
     

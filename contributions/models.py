@@ -7,7 +7,6 @@ class Contribution(models.Model):
     goal = models.ForeignKey("goals.Goal", on_delete=models.CASCADE, null=True, blank=True, related_name="contributions")
     created_at = models.DateTimeField(auto_now_add=True)
     user = models.ForeignKey(CustomUser, on_delete=models.CASCADE, related_name="contributions")
-    progress = models.PositiveIntegerField(default=0)
 
     def save(self, *args, **kwargs):
         if self.subtask and not self.goal:
@@ -21,4 +20,4 @@ class Contribution(models.Model):
 
 
     def __str__(self):
-        return f"{self.user} - {self.subtask} ({self.progress}%)"
+        return f"{self.user} - {self.subtask}"

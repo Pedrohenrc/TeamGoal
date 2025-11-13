@@ -9,7 +9,6 @@
 </head>
 <body class="bg-gradient-to-br from-slate-900 via-purple-900 to-slate-900 text-white min-h-screen">
     
-    <!-- Navbar -->
     <nav class="bg-black/20 backdrop-blur-lg border-b border-white/10">
         <div class="container mx-auto px-6 py-4">
             <div class="flex justify-between items-center">
@@ -32,12 +31,10 @@
         </div>
     </nav>
 
-    <!-- Main Content -->
     <div class="container mx-auto px-6 py-8">
         
         <div class="max-w-3xl mx-auto">
             
-            <!-- Header -->
             <div class="mb-8">
                 <h1 class="text-4xl md:text-5xl font-bold mb-2">
                     {% if object %}Editar Subtarefa{% else %}Nova Subtarefa{% endif %}
@@ -47,13 +44,11 @@
                 </p>
             </div>
 
-            <!-- Form Card -->
             <div class="bg-white/5 backdrop-blur-sm rounded-2xl p-8 border border-white/10">
                 
                 <form method="post" class="space-y-6">
                     {% csrf_token %}
 
-                    <!-- Display Form Errors -->
                     {% if form.non_field_errors %}
                     <div class="bg-red-500/20 border border-red-500/50 rounded-lg p-4">
                         <div class="flex items-start gap-3">
@@ -65,7 +60,6 @@
                     </div>
                     {% endif %}
 
-                    <!-- Título -->
                     <div>
                         <label for="{{ form.title.id_for_label }}" class="block text-sm font-semibold mb-2">
                             Título da Subtarefa <span class="text-red-400">*</span>
@@ -83,7 +77,6 @@
                         <p class="mt-2 text-sm text-gray-400">Seja específico e claro sobre o que precisa ser feito</p>
                     </div>
 
-                    <!-- Descrição -->
                     <div>
                         <label for="{{ form.description.id_for_label }}" class="block text-sm font-semibold mb-2">
                             Descrição
@@ -99,38 +92,35 @@
                         <p class="mt-2 text-sm text-gray-400">Opcional: Adicione instruções ou observações importantes</p>
                     </div>
 
-                    <!-- Atribuir Para -->
+                    <!-- BLOCDO DE ATRIBUIÇÃO CORRIGIDO -->
                     <div>
                         <label for="{{ form.assigned_to.id_for_label }}" class="block text-sm font-semibold mb-2">
                             Atribuir Para
                         </label>
+                        <!-- ESTILO ALTERADO: De 'bg-white/5' para 'bg-white' e de 'text-white' para 'text-gray-900' -->
                         <select 
                             name="{{ form.assigned_to.name }}" 
                             id="{{ form.assigned_to.id_for_label }}"
-                            class="w-full px-4 py-3 bg-slate-800 border border-white/20 rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-500 text-white"
+                            class="w-full px-4 py-3 bg-white border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent transition text-gray-900"
                         >
-                            {{ form.assigned_to }}
+                            <!-- Adiciona APENAS a opção vazia definida pelo empty_label no forms.py -->
+                            <option value="" {% if not form.assigned_to.value %}selected{% endif %}>
+                                {{ form.assigned_to.field.empty_label }}
+                            </option>
+                            
+                            <!-- Itera e renderiza APENAS as opções de usuários, ignorando o rótulo vazio (que já foi adicionado acima) -->
+                            {% for value, text in form.assigned_to.field.choices %}
+                                {% if value != '' and value != None %}
+                                    <!-- A cor do texto aqui é herdada do 'select' pai (text-gray-900), resolvendo o contraste -->
+                                    <option value="{{ value }}" {% if form.assigned_to.value|slugify == value|slugify %}selected{% endif %}>{{ text }}</option>
+                                {% endif %}
+                            {% endfor %}
                         </select>
                         {% if form.assigned_to.errors %}<p class="mt-2 text-sm text-red-400">{{ form.assigned_to.errors.0 }}</p>{% endif %}
                         <p class="mt-2 text-sm text-gray-400">Opcional: Atribua esta subtarefa para um membro do time</p>
                     </div>
+                    <!-- FIM DO BLOCDO DE ATRIBUIÇÃO CORRIGIDO -->
 
-                    <!-- Status -->
-                    <div>
-                        <label for="{{ form.is_completed.id_for_label }}" class="flex items-center gap-3 cursor-pointer">
-                            <input 
-                                type="checkbox" 
-                                name="{{ form.is_completed.name }}" 
-                                id="{{ form.is_completed.id_for_label }}"
-                                {% if form.is_completed.value %}checked{% endif %}
-                                class="w-5 h-5 rounded border-gray-600 text-purple-600 focus:ring-purple-500"
-                            >
-                            <span class="text-sm font-semibold">Marcar como concluída</span>
-                        </label>
-                        {% if form.is_completed.errors %}<p class="mt-2 text-sm text-red-400">{{ form.is_completed.errors.0 }}</p>{% endif %}
-                    </div>
-
-                    <!-- Info Box -->
                     <div class="bg-green-500/10 border border-green-500/30 rounded-lg p-4">
                         <div class="flex items-start gap-3">
                             <svg class="w-5 h-5 text-green-400 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -142,7 +132,6 @@
                         </div>
                     </div>
 
-                    <!-- Action Buttons -->
                     <div class="flex flex-col sm:flex-row gap-4 pt-4">
                         <button 
                             type="submit"

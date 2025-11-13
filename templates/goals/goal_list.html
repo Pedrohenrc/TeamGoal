@@ -235,12 +235,18 @@
                         <div>
                             <div class="flex justify-between text-sm mb-2">
                                 <span class="text-gray-400">Progresso</span>
-                                <span class="font-bold text-lg">{{ goal.progress }}%</span>
+                                <span class="font-bold text-lg">{{ goal.progress_display }}</span>
                             </div>
                             <div class="w-full bg-white/10 rounded-full h-3 overflow-hidden">
+                                {% if goal.total_count > 0 %}
+                                    {% widthratio goal.completed_count goal.total_count 100 as progress_percent %}
+                                {% else %}
+                                    {% with progress_percent=0 %}
+                                    {% endwith %}
+                                {% endif %}
                                 <div 
-                                    class="h-full rounded-full transition-all duration-500 {% if goal.progress == 100 %}bg-gradient-to-r from-green-500 to-emerald-600{% elif goal.progress >= 50 %}bg-gradient-to-r from-blue-500 to-purple-600{% else %}bg-gradient-to-r from-orange-500 to-red-600{% endif %}"
-                                    style="width: {{ goal.progress }}%"
+                                    class="bg-gradient-to-r from-blue-500 to-purple-600 h-full rounded-full transition-all duration-500" 
+                                    style="width: {% if goal.total_count > 0 %}{{ progress_percent }}{% else %}0{% endif %}%"
                                 ></div>
                             </div>
                         </div>

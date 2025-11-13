@@ -1,5 +1,5 @@
 from django.urls import path
-from .views import ContributionCreateView, ContributionDetailView, ContributionDeleteView, ContributionListView, ContributionUpdateView
+from .views import ContributionDetailView, ContributionDeleteView, ContributionListView, ContributionUpdateView
 
 urlpatterns = [
     path("", ContributionListView.as_view(), name="contribution-list"),
