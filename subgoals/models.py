@@ -1,6 +1,7 @@
 from django.db import models
 from users.models import CustomUser
 from goals.models import Goal
+
 # Create your models here.
 class SubGoal(models.Model):
     goal = models.ForeignKey(Goal, on_delete=models.CASCADE, related_name="subtasks")
@@ -27,7 +28,7 @@ class SubGoal(models.Model):
                 Contribution.objects.create(
                     subtask=self,
                     goal=self.goal,
-                    user=user or self.assigned_to,
+                    user=self.assigned_to,
                     progress=100
                 )
             

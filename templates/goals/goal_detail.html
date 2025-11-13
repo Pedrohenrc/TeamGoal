@@ -159,7 +159,7 @@
                                 type="checkbox" 
                                 {% if subtask.is_completed %}checked{% endif %}
                                 class="mt-1 w-5 h-5 rounded border-gray-600 text-purple-600 focus:ring-purple-500 cursor-pointer"
-                                onchange="window.location.href='{% url 'subgoal-update' goal.id subtask.pk %}?complete=true'"
+                                onchange="window.location.href='{% url 'subgoal-toggle-complete' goal.id subtask.pk %}'"
                             />
                             <div class="flex-1">
                                 <div class="flex items-center gap-2 mb-1">

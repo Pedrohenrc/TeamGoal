@@ -1,7 +1,8 @@
-from django.shortcuts import get_object_or_404
+from django.shortcuts import get_object_or_404, redirect
 from django.urls import reverse, reverse_lazy
 from django.views.generic import ListView, DetailView, CreateView, UpdateView, DeleteView
 from django.contrib.auth.mixins import LoginRequiredMixin
+from django.contrib.auth.decorators import login_required
 from .models import SubGoal
 from goals.models import Goal
 from .forms import SubgoalForm
@@ -11,13 +12,22 @@ class SubgoalCreateView(LoginRequiredMixin, CreateView):
     form_class = SubgoalForm
     template_name = "subgoals/subgoal_form.html"
 
+    def get_form_kwargs(self):
+        kwargs = super().get_form_kwargs()
+        goal_id = self.kwargs.get("goal_id")
+        kwargs['goal'] = get_object_or_404(Goal, id=goal_id)
+        return kwargs
+
     def form_valid(self, form):
         goal_id = self.kwargs.get("goal_id")
         form.instance.goal = get_object_or_404(Goal, id=goal_id)
         response = super().form_valid(form)
         return response
+    
     def get_success_url(self):
          return reverse('goal-detail', kwargs={"pk": self.object.goal.id})
+
+
 class SubgoalDetailView(LoginRequiredMixin, DetailView):
     model = SubGoal
     context_object_name = "subgoal"
@@ -28,9 +38,6 @@ class SubgoalDetailView(LoginRequiredMixin, DetailView):
         context['contributions'] = self.object.contributions.all()
 
         return context
-    
-    
-        
     
 class SubgoalUpdateView(LoginRequiredMixin, UpdateView):
     model = SubGoal
@@ -76,3 +83,15 @@ class SubgoalDeleteView(DeleteView, LoginRequiredMixin):
     def get_success_url(self):
         return reverse_lazy('goal-detail', kwargs={'pk': self.object.goal.id})
 
+@login_required
+def complete_subtask(request, goal_id, pk):
+    subtask = get_object_or_404(SubGoal, pk=pk)
+    goal_id = subtask.goal.id
+    
+    if not subtask.is_completed:
+        subtask.fechar_subtask()
+    else:
+        subtask.is_completed = False
+        subtask.save()
+    
+    return redirect('goal-detail', pk=goal_id)
