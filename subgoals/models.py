@@ -1,9 +1,11 @@
 from django.db import models
 from users.models import CustomUser
 from goals.models import Goal
+import uuid
 
 # Create your models here.
 class SubGoal(models.Model):
+    id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
     goal = models.ForeignKey(Goal, on_delete=models.CASCADE, related_name="subtasks")
     title = models.CharField(max_length=200)
     description = models.TextField(blank=True)
