@@ -3,7 +3,7 @@ from .views import ContributionDetailView, ContributionDeleteView, ContributionL
 
 urlpatterns = [
     path("", ContributionListView.as_view(), name="contribution-list"),
-    path("<int:pk>/", ContributionDetailView.as_view(), name="contribution-detail"),
-    path("<int:pk>/editar", ContributionUpdateView.as_view(), name="contribution-update"),
-    path("<int:pk>/delete", ContributionDeleteView.as_view(), name="contribution-delete")
+    path("<uuid:pk>/", ContributionDetailView.as_view(), name="contribution-detail"),
+    path("<uuid:pk>/editar", ContributionUpdateView.as_view(), name="contribution-update"),
+    path("<uuid:pk>/delete", ContributionDeleteView.as_view(), name="contribution-delete")
 ]

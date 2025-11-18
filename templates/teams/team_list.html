@@ -90,7 +90,7 @@
                         </svg>
                     </div>
                 </div>
-                <div class="text-3xl font-bold">{{ teams|length|add:"0" }}{% for team in teams %}{% if team.owner == user %}{% if forloop.first %}{{ forloop.counter }}{% else %}{% endif %}{% endif %}{% endfor %}</div>
+                <div class="text-3xl font-bold">{{ teams_led_count }}</div>
             </div>
 
             <div class="bg-white/5 backdrop-blur-sm rounded-2xl p-6 border border-white/10">

@@ -15,6 +15,15 @@ class TeamListView(LoginRequiredMixin, ListView):
     def get_queryset(self):
         return self.request.user.teams.all()
     
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        user = self.request.user
+        
+        teams_led_queryset = self.object_list.filter(owner=user)
+        
+        context['teams_led_count'] = teams_led_queryset.count()
+        
+        return context
 class TeamDetailView(LoginRequiredMixin, DetailView):
     model = Team
     template_name = "teams/team_detail.html"

@@ -1,9 +1,11 @@
 from django.db import models
 from users.models import CustomUser
 from goals.models import Goal
+import uuid
 
 # Create your models here.
 class SubGoal(models.Model):
+    id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
     goal = models.ForeignKey(Goal, on_delete=models.CASCADE, related_name="subtasks")
     title = models.CharField(max_length=200)
     description = models.TextField(blank=True)
@@ -25,12 +27,15 @@ class SubGoal(models.Model):
             
             if self.assigned_to:
                 from contributions.models import Contribution
-                Contribution.objects.create(
-                    subtask=self,
-                    goal=self.goal,
-                    user=self.assigned_to,
-                    progress=100
-                )
+                if not Contribution.objects.filter(subtask=self).exists():
+                    try:
+                        Contribution.objects.create(
+                            subtask=self,
+                            goal=self.goal,
+                            user=self.assigned_to,
+                        )
+                    except Exception as e:
+                        print(f"ERRO DE INTEGRIDADE CAPTURADO ao criar Contribution para SubGoal {self.id}: {e}")
             
             if hasattr(self.goal, "update_progress"):
                 self.goal.update_progress()

@@ -1,8 +1,10 @@
 from django.db import models
 from users.models import CustomUser
+import uuid
 # Create your models here.
 
 class Contribution(models.Model):
+    id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
     subtask = models.ForeignKey("subgoals.SubGoal", on_delete=models.CASCADE, null=True, blank=True, related_name="contributions")
     goal = models.ForeignKey("goals.Goal", on_delete=models.CASCADE, null=True, blank=True, related_name="contributions")
     created_at = models.DateTimeField(auto_now_add=True)
