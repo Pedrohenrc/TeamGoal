@@ -27,12 +27,15 @@ class SubGoal(models.Model):
             
             if self.assigned_to:
                 from contributions.models import Contribution
-                Contribution.objects.create(
-                    subtask=self,
-                    goal=self.goal,
-                    user=self.assigned_to,
-                    progress=100
-                )
+                if not Contribution.objects.filter(subtask=self).exists():
+                    try:
+                        Contribution.objects.create(
+                            subtask=self,
+                            goal=self.goal,
+                            user=self.assigned_to,
+                        )
+                    except Exception as e:
+                        print(f"ERRO DE INTEGRIDADE CAPTURADO ao criar Contribution para SubGoal {self.id}: {e}")
             
             if hasattr(self.goal, "update_progress"):
                 self.goal.update_progress()
