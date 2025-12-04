@@ -1,14 +1,34 @@
+FROM python:3.12-slim as builder
+
+WORKDIR /usr/src/app
+
+# Copiar requirements
+COPY requirements.txt .
+
+# Instalar dependências
+RUN pip install --user --no-cache-dir -r requirements.txt
+
+# Stage 2: Runtime
 FROM python:3.12-slim
 
-ENV PYTHONUNBUFFERED 1
+WORKDIR /usr/src/app
 
-WORKDIR /usr/src/
+# Copiar dependências do builder
+COPY --from=builder /root/.local /root/.local
 
-COPY requirements.txt .
-RUN pip install --no-cache-dir -r requirements.txt
-
+# Copiar código da aplicação
 COPY . .
 
+# Configurar PATH
+ENV PATH=/root/.local/bin:$PATH \
+    PYTHONUNBUFFERED=1 \
+    DJANGO_SETTINGS_MODULE=TeamGoal.settings
+
+# Coletar arquivos estáticos
+RUN python manage.py collectstatic --noinput --no-input
+
+# Expor porta
 EXPOSE 8000
 
-CMD ["python", "manage.py", "runserver", "0.0.0.0:8000"]
+# Comando para iniciar
+CMD ["gunicorn", "TeamGoal.wsgi:application", "--bind", "0.0.0.0:8000", "--workers", "4"]

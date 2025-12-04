@@ -63,3 +63,8 @@ dist/
 # ---- QODO / CUSTOM CACHES ----
 .qodo/
 
+.env
+teams/__pycache__/urls.cpython-312.pyc
+teams/__pycache__/models.cpython-312.pyc
+/teams/__pycache__
+/teams/__pycache__
