@@ -22,13 +22,12 @@ COPY . .
 # Configurar PATH
 ENV PATH=/root/.local/bin:$PATH \
     PYTHONUNBUFFERED=1 \
-    DJANGO_SETTINGS_MODULE=TeamGoal.settings
+    DJANGO_SETTINGS_MODULE=TeamGoal.settings \
 
 # Coletar arquivos estáticos
-RUN python manage.py collectstatic --noinput --no-input
+RUN DJANGO_BUILD=1 python manage.py collectstatic --noinput
 
-# Expor porta
 EXPOSE 8000
 
-# Comando para iniciar
+# Comando para iniciar o Gunicorn
 CMD ["gunicorn", "TeamGoal.wsgi:application", "--bind", "0.0.0.0:8000", "--workers", "4"]

@@ -11,6 +11,18 @@ from dotenv import load_dotenv
 # Carrega variáveis do .env
 load_dotenv()
 
+DJANGO_BUILD = os.environ.get("DJANGO_BUILD")
+
+# Variáveis específicas do PostgreSQL/Render
+DB_HOST = os.environ.get("DB_HOST")
+DB_NAME = os.environ.get("DB_NAME")
+DB_USER = os.environ.get("DB_USER")
+DB_PASSWORD = os.environ.get("DB_PASSWORD")
+DB_PORT = os.environ.get("DB_PORT")
+
+# Assume PostgreSQL se o DB_HOST for fornecido, senão usa o padrão local.
+DB_ENGINE_DEFAULT = "django.db.backends.postgresql" if DB_HOST else "django.db.backends.sqlite3"
+
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
@@ -96,17 +108,43 @@ TEMPLATES = [
 
 WSGI_APPLICATION = 'TeamGoal.wsgi.application'
 
-# Database
-DATABASES = {
-    'default': {
-        'ENGINE': os.environ.get("DB_ENGINE", "django.db.backends.sqlite3"),
-        'NAME': os.environ.get("DB_NAME", BASE_DIR / "db.sqlite3"),
-        'USER': os.environ.get("DB_USER", ""),
-        'PASSWORD': os.environ.get("DB_PASSWORD", ""),
-        'HOST': os.environ.get("DB_HOST", ""),
-        'PORT': os.environ.get("DB_PORT", ""),
+if DJANGO_BUILD:
+    # 1. AMBIENTE DE BUILD (Rodando collectstatic no Dockerfile)
+    print("--- Usando SQLite temporário para o Build Stage (collectstatic) ---")
+    DATABASES = {
+        'default': {
+            'ENGINE': 'django.db.backends.sqlite3',
+            'NAME': Path("/tmp/db.sqlite3"), # Arquivo temporário
+        }
     }
-}
+
+elif DB_HOST:
+    # 2. AMBIENTE DE EXECUÇÃO (Runtime Docker/Render)
+    print("--- Usando PostgreSQL para o Runtime ---")
+    DATABASES = {
+        'default': {
+            'ENGINE': DB_ENGINE_DEFAULT,
+            'NAME': DB_NAME,
+            'USER': DB_USER,
+            'PASSWORD': DB_PASSWORD,
+            'HOST': DB_HOST,
+            'PORT': DB_PORT if DB_PORT else '5432',
+        }
+    }
+else:
+    # 3. AMBIENTE LOCAL DE DESENVOLVIMENTO
+    print("--- Usando Configuração de Desenvolvimento Local ---")
+    DATABASES = {
+        'default': {
+            'ENGINE': os.environ.get("DB_ENGINE", "django.db.backends.sqlite3"),
+            'NAME': os.environ.get("DB_NAME", BASE_DIR / "db.sqlite3"),
+            'USER': os.environ.get("DB_USER", ""),
+            'PASSWORD': os.environ.get("DB_PASSWORD", ""),
+            'HOST': os.environ.get("DB_HOST", ""),
+            'PORT': os.environ.get("DB_PORT", ""),
+        }
+    }
+
 
 # Password validation
 AUTH_PASSWORD_VALIDATORS = [
