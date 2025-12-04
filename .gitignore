@@ -1,70 +1,64 @@
-# ---- DJANGO / PYTHON ----
+# ---- PYTHON & VENV ----
+.venv/
+venv/
+env/
+ENV/
 __pycache__/
 *.py[cod]
-*.log
-*.pot
 *.pyc
 *.pyo
 *.pyd
+.Python
 
-# ---- DATABASES ----
+# ---- LOGS & TEMP ----
+*.log
+*.pot
+*.tmp
+
+# ---- DJANGO ----
 db.sqlite3
 *.db
-
-# ---- DJANGO STATIC & MEDIA ----
-staticfiles/
-static/
 media/
+staticfiles/
 
-# ---- ENVIRONMENT VARIABLES ----
-.env
-.env.local
-.env.*.local
+# ---- GIT ----
+.git/
+.gitignore
+.gitattributes
 
-# ---- VIRTUAL ENVIRONMENT ----
-novo_venv/
-venv/
-env/
-.venv/
-
-# ---- IDE / EDITOR ----
+# ---- IDE/EDITOR ----
 .vscode/
 .idea/
 *.sublime-project
 *.sublime-workspace
+*.swp
+*.swo
+*~
+
+# ---- DOCKER ----
+Dockerfile
+docker-compose.yml
+.dockerignore
+
+# ---- ENV ----
+.env
+.env.local
+.env.*.local
 
 # ---- TESTS & COVERAGE ----
+.pytest_cache/
 .coverage
 htmlcov/
 .tox/
-.pytest_cache/
 nosetests.xml
 coverage.xml
-*.cover
-*.py,cover
-.hypothesis/
 
-# ---- SYSTEM FILES ----
-.DS_Store
-Thumbs.db
-
-# ---- MIGRATIONS CACHE ----
-**/migrations/__pycache__/
-**/migrations/*.pyc
-# (opcional) se quiser ignorar TODAS as migrações locais, descomente abaixo:
-# **/migrations/
-
-# ---- COMPILED / BUILD ----
+# ---- BUILD & DIST ----
 build/
 dist/
 *.egg-info/
 .eggs/
 
-# ---- QODO / CUSTOM CACHES ----
-.qodo/
-
-.env
-teams/__pycache__/urls.cpython-312.pyc
-teams/__pycache__/models.cpython-312.pyc
-/teams/__pycache__
-/teams/__pycache__
+# ---- SYSTEM FILES ----
+.DS_Store
+Thumbs.db
