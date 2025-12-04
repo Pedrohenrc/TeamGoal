@@ -22,7 +22,7 @@ COPY . .
 # Configurar PATH
 ENV PATH=/root/.local/bin:$PATH \
     PYTHONUNBUFFERED=1 \
-    DJANGO_SETTINGS_MODULE=TeamGoal.settings \
+    DJANGO_SETTINGS_MODULE=TeamGoal.settings
 
 # Coletar arquivos estáticos
 RUN DJANGO_BUILD=1 python manage.py collectstatic --noinput
