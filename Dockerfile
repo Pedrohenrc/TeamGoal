@@ -24,6 +24,9 @@ ENV PATH=/root/.local/bin:$PATH \
     PYTHONUNBUFFERED=1 \
     DJANGO_SETTINGS_MODULE=TeamGoal.settings
 
+ARG SECRET_KEY
+ENV SECRET_KEY=${SECRET_KEY}
+
 # Coletar arquivos estáticos
 RUN DJANGO_BUILD=1 python manage.py collectstatic --noinput
 
