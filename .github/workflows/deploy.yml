@@ -29,6 +29,7 @@ jobs:
       - name: Run Django Migrations on CI Runner
         env:
           DATABASE_URL: ${{ secrets.RENDER_DATABASE_URL }}
+          SECRET_KEY: ${{ secrets.SECRET_KEY }}
         run: python manage.py migrate --no-input
 
       - name: Login to Docker Hub
