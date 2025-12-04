@@ -8,6 +8,6 @@ urlpatterns = [
     path("<uuid:pk>/edit/", TeamUpdateView.as_view(), name="team-edit"),
     path("<uuid:pk>/delete/", TeamDeleteView.as_view(), name="team-delete"),
     path('join/', TeamJoinByCodeView.as_view(), name='team-join-code'),
-    path('requests/<uuid:request_id>/accept/', accept_join_request, name='accept-join-request'),
-    path('requests/<uuid:request_id>/reject/', reject_join_request, name='reject-join-request'),
+    path('requests/<int:request_id>/accept/', accept_join_request, name='accept-join-request'),
+    path('requests/<int:request_id>/reject/', reject_join_request, name='reject-join-request'),
     ]
