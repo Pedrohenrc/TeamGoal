@@ -65,7 +65,7 @@ class GoalListView(ListView, LoginRequiredMixin):
     template_name = "goals/goal_list.html"
 
     def get_queryset(self):
-        queryset = Goal.objects.all()
+        Goal.objects.filter(team__members=self.request.user)
 
         status_param = self.request.GET.get("status")
         if status_param:
