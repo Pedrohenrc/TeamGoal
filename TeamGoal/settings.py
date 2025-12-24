@@ -199,11 +199,14 @@ LOGOUT_REDIRECT_URL = 'core:home'
 # URL de login padrão
 LOGIN_URL = 'core:home'
 
-# Configurações adicionais do allauth
+# Configurações adicionais do allauth (sintaxe atualizada)
 ACCOUNT_EMAIL_VERIFICATION = 'none'  # Desabilita verificação de email
-ACCOUNT_EMAIL_REQUIRED = True  # Exige email no cadastro
-ACCOUNT_AUTHENTICATION_METHOD = 'email'  # Usa email como método de autenticação
-ACCOUNT_USERNAME_REQUIRED = False  # Não exige username (usa email)
+
+# Nova sintaxe para métodos de login
+ACCOUNT_LOGIN_METHODS = {'email'}  # Usa email como método de autenticação
+
+# Nova sintaxe para campos de cadastro (email obrigatório, sem username)
+ACCOUNT_SIGNUP_FIELDS = ['email*', 'password1*', 'password2*']
 
 # Redireciona automaticamente após login social sem página intermediária
 SOCIALACCOUNT_AUTO_SIGNUP = True
