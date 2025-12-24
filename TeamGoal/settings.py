@@ -188,10 +188,27 @@ EMAIL_HOST_PASSWORD = os.environ.get("EMAIL_HOST_PASSWORD", "")
 # Default primary key field type
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
+SOCIALACCOUNT_LOGIN_ON_GET = True
+
+# URL de redirecionamento após login bem-sucedido
 LOGIN_REDIRECT_URL = 'core:dashboard'
+
+# URL de redirecionamento após logout
 LOGOUT_REDIRECT_URL = 'core:home'
+
+# URL de login padrão
 LOGIN_URL = 'core:home'
 
+# Configurações adicionais do allauth
+ACCOUNT_EMAIL_VERIFICATION = 'none'  # Desabilita verificação de email
+ACCOUNT_EMAIL_REQUIRED = True  # Exige email no cadastro
+ACCOUNT_AUTHENTICATION_METHOD = 'email'  # Usa email como método de autenticação
+ACCOUNT_USERNAME_REQUIRED = False  # Não exige username (usa email)
+
+# Redireciona automaticamente após login social sem página intermediária
+SOCIALACCOUNT_AUTO_SIGNUP = True
+
+# Configurações específicas dos provedores
 SOCIALACCOUNT_PROVIDERS = {
     'google': {
         'SCOPE': [
@@ -200,6 +217,10 @@ SOCIALACCOUNT_PROVIDERS = {
         ],
         'AUTH_PARAMS': {
             'access_type': 'online',
+        },
+        'APP': {
+            'client_id': os.environ.get('GOOGLE_CLIENT_ID', ''),
+            'secret': os.environ.get('GOOGLE_CLIENT_SECRET', ''),
         }
     },
     'github': {
@@ -207,10 +228,16 @@ SOCIALACCOUNT_PROVIDERS = {
             'user',
             'repo',
         ],
+        'APP': {
+            'client_id': os.environ.get('GITHUB_CLIENT_ID', ''),
+            'secret': os.environ.get('GITHUB_CLIENT_SECRET', ''),
+        }
     }
 }
 
+# Garante que o usuário seja redirecionado automaticamente
 ACCOUNT_LOGOUT_ON_GET = False
+ACCOUNT_SIGNUP_REDIRECT_URL = 'core:dashboard'
 
 REST_FRAMEWORK = {
     'DEFAULT_PERMISSION_CLASSES': [
